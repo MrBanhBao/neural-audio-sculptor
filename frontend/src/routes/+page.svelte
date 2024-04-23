@@ -1,4 +1,5 @@
-<!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
+<script lang="ts">
+</script>
 
 <div class="container mx-auto flex h-full items-center justify-center">
 	<div class="space-y-5">
