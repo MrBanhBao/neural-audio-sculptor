@@ -1,7 +1,8 @@
 <script lang="ts">
+	import AudioPlayer from '$lib/components/audioPlayer/AudioPlayer.svelte';
 </script>
 
-<div class="container mx-auto flex h-full items-center justify-center">
+<!-- <div class="container mx-auto flex h-full items-center justify-center">
 	<div class="space-y-5">
 		<h1 class="h1">Let's get cracking bones!</h1>
 		<p>Start by exploring:</p>
@@ -13,4 +14,6 @@
 			</li>
 		</ul>
 	</div>
-</div>
+</div> -->
+
+<AudioPlayer></AudioPlayer>
