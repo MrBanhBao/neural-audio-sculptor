@@ -1,0 +1,10 @@
+backend:
+  host: '127.0.0.1'
+  port: 8000
+  device: None
+  cache_dir: '/home/hao/Workspace/neural-audio-sculptor/backend/.cache'
+  music_dir: ''
+  model_dir: ''
+frontend:
+  host: localhost
+  port: 5173
