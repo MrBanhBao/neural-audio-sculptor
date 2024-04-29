@@ -5,6 +5,7 @@
 	import Folder from './Folder.svelte';
 
 	export let configKeyName: string = 'music_dir';
+	export let endpointFunction: Function;
 	let fileStructure: TypeFolder | undefined;
 
 	async function getPath(configKey: string): Promise<string> {
@@ -35,5 +36,5 @@
 {#if fileStructure === undefined}
 	<p>Loading...</p>
 {:else}
-	<Folder name={fileStructure.name} files={fileStructure.files}></Folder>
+	<Folder name={fileStructure.name} files={fileStructure.files} {endpointFunction}></Folder>
 {/if}

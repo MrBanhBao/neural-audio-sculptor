@@ -5,6 +5,10 @@
 
 	let fileName = 'None';
 	let showModal = false;
+
+	function test() {
+		console.log('I am a test function.');
+	}
 </script>
 
 <header class="card-header flex items-center">
@@ -20,5 +24,5 @@
 </header>
 
 <Modal bind:showModal title="Music Finder">
-	<Finder configKeyName="music_dir"></Finder>
+	<Finder configKeyName="music_dir" endpointFunction={test}></Finder>
 </Modal>

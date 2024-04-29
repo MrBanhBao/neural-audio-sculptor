@@ -4,6 +4,8 @@
 
 	export let name: string;
 	export let files: Array<TypeFolder | TypeFile>;
+	export let endpointFunction: Function;
+
 	let expanded = false;
 
 	function toggle() {
@@ -31,7 +33,7 @@
 				{#if 'files' in file}
 					<svelte:self {...file} />
 				{:else}
-					<File {...file} endpointFunction={test} />
+					<File {...file} {endpointFunction} />
 				{/if}
 			</li>
 		{/each}
