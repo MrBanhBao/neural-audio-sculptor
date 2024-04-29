@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { IconPlaylist } from '@tabler/icons-svelte';
 	import Modal from '../utils/Modal.svelte';
+	import Finder from '$lib/components/finder/Finder.svelte';
+
 	let fileName = 'None';
 	let showModal = false;
 </script>
@@ -16,4 +18,7 @@
 	</button>
 	<span class="pl-4">File: {fileName}</span>
 </header>
-<Modal bind:showModal title="Music Finder">Test</Modal>
+
+<Modal bind:showModal title="Music Finder">
+	<Finder configKey="music_dir"></Finder>
+</Modal>

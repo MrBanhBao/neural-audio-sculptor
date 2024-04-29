@@ -7,3 +7,28 @@ declare namespace App {
 	// interface Error {}
 	// interface Platform {}
 }
+
+type Config = {
+	backend: {
+		host: string;
+		port: number;
+		device: string | null;
+		cache_dir: string;
+		music_dir: string;
+		stylegan_checkpoints: string;
+	}
+	frontend: {
+		host: string;
+		port: number
+	}
+}
+
+type TypeFile = {
+	name: string;
+	path: string;
+}
+
+type TypeFolder = {
+	name: string;
+	files: Array<TypeFile | TypeFolder>
+}
