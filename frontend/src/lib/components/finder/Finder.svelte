@@ -4,7 +4,7 @@
 	import yaml from 'js-yaml';
 	import Folder from './Folder.svelte';
 
-	export let configKey: string = 'music_dir';
+	export let configKeyName: string = 'music_dir';
 	let fileStructure: TypeFolder | undefined;
 
 	async function getPath(configKey: string): Promise<string> {
@@ -12,23 +12,23 @@
 		const text = await response.text();
 		const configObj = yaml.load(text) as Config;
 
-		return configObj.backend[configKey];
+		let key = configKeyName as keyof Config;
+		return configObj.backend[key];
 	}
 
-	async function requestFileStructure(path: string): Promise<Folder | undefined> {
+	async function requestFileStructure(path: string): Promise<TypeFolder | undefined> {
 		const response = await getFileStructure(path);
 		if (response?.ok) {
 			const data = await response.json();
-			return data as Folder;
+			return data as TypeFolder;
 		}
 
 		return undefined;
 	}
 
 	onMount(async () => {
-		const path = await getPath(configKey);
+		const path = await getPath(configKeyName);
 		fileStructure = await requestFileStructure(path);
-		console.log(fileStructure);
 	});
 </script>
 

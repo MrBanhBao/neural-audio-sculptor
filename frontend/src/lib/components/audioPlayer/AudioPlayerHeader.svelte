@@ -20,5 +20,5 @@
 </header>
 
 <Modal bind:showModal title="Music Finder">
-	<Finder configKey="music_dir"></Finder>
+	<Finder configKeyName="music_dir"></Finder>
 </Modal>
