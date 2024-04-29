@@ -1,7 +1,7 @@
 <script lang="ts">
 	let songTitle = undefined;
 	let artist = undefined;
-	let coverArt = 'src/lib/music-placeholder.png';
+	let coverArt = 'images/music-placeholder.png';
 </script>
 
 <div class="audio-info-container flex items-end">
