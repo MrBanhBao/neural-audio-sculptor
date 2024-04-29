@@ -1,11 +1,16 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { getFileStructure } from '$lib/apis/api';
 	import yaml from 'js-yaml';
 	import Folder from './Folder.svelte';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
 	export let configKeyName: string = 'music_dir';
 	export let endpointFunction: Function;
+
+	let milliseconds = 2500;
+	let timeout: NodeJS.Timeout;
+	let error = false;
 	let fileStructure: TypeFolder | undefined;
 
 	async function getPath(configKey: string): Promise<string> {
@@ -27,14 +32,34 @@
 		return undefined;
 	}
 
+	function setTimer() {
+		const timeout = setTimeout(() => {
+			if (!fileStructure) {
+				error = true;
+			}
+		}, milliseconds);
+
+		return timeout;
+	}
+
 	onMount(async () => {
 		const path = await getPath(configKeyName);
 		fileStructure = await requestFileStructure(path);
+
+		timeout = setTimer();
+	});
+
+	onDestroy(() => {
+		clearTimeout(timeout);
 	});
 </script>
 
 {#if fileStructure === undefined}
-	<p>Loading...</p>
+	{#if error}
+		<div>Error: Failed to load file structure!</div>
+	{:else}
+		<span class="flex"><ProgressRadial class="mr-2" width="w-5" text />Loading...</span>
+	{/if}
 {:else}
 	<Folder name={fileStructure.name} files={fileStructure.files} {endpointFunction}></Folder>
 {/if}
