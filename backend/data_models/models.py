@@ -185,3 +185,18 @@ class StyleGanStore(BaseModel):
             np.random.choice([-1, 1], size=[1, num_ws, z_dim])
         ).to(device)
         return cls(z=z, direction_z=direction_z, ws=ws, direction_ws=direction_ws)
+
+
+class AudioMetaData(BaseModel):
+    artist: str
+    title: str
+    path: str
+    file_name: str
+    num_frames: int
+    sample_rate: int
+    duration: float
+    image: str
+
+
+class StringValue(BaseModel):
+    value: str

@@ -1,6 +1,7 @@
 import copy
 
-from fastapi import FastAPI
+import uvicorn
+from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 
 import utils.store as store
@@ -15,8 +16,8 @@ app.add_middleware(
     allow_origins=[
         "http://127.0.0.1:5173",
         "http://localhost:5173",
-        "http://127.0.0.1:8080",
-        "http://localhost:8080",
+        # "http://127.0.0.1:8080",
+        #'"http://localhost:8080",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -35,12 +36,23 @@ async def root():
 
 @app.get("/get/filestructure")
 def get_filestructure(path: str) -> Folder:
-    return create_nested_file_structure(root_path=path)
+    try:
+        return create_nested_file_structure(root_path=path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/get/config")
 def get_filestructure() -> Config:
-    config = copy.deepcopy(store.config)
-    # convert torch.device to str so it is serializable
-    config.backend.device = str(config.backend.device)
-    return config
+    try:
+        config = copy.deepcopy(store.config)
+        config.backend.device = str(
+            config.backend.device
+        )  # convert torch.device to str so it is serializable
+        return config
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host=store.config.backend.host, port=store.config.backend.port)

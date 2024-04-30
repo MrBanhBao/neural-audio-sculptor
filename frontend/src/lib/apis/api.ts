@@ -62,5 +62,19 @@ export async function loadAudioFile(path: StringValue) {
     }
 
     return response;
+}
 
+export async function loadAudioCover(path: StringValue) {
+
+    const response = await fetch(`http://${HOST}:${PORT}/api/audio/load/cover`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(path)
+    });
+
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
 }

@@ -38,11 +38,12 @@ type StringValue = {
 }
 
 type AudioMetaData = {
-	artist: string,
-	title: string,
-	file_name: string,
-	num_frames: number,
-	sample_rate: number,
-	duration: number
-	image: string
+	artist: string;
+	title: string;
+	path: string;
+	file_name: string;
+	num_frames: number;
+	sample_rate: number;
+	duration: number;
+	image: string;
 }
