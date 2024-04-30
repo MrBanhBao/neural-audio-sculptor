@@ -218,6 +218,9 @@ class StringValue(BaseModel):
     value: str
 
 
+class FloatValue(BaseModel):
+    value: float
+
 class PlaybackState(BaseModel):
     play: bool = False
     loop: bool = True

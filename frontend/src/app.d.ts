@@ -41,6 +41,10 @@ type StringValue = {
 	value: string;
 }
 
+type NumberValue = {
+	value: number;
+}
+
 type AudioMetaData = {
 	artist: string;
 	title: string;

@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 import utils.store as store
 from core.audio import AudioLoader, AudioPlayer
-from data_models import AudioMetaData, StringValue, PlaybackState
+from data_models import AudioMetaData, StringValue, PlaybackState, FloatValue
 
 router = APIRouter(
     prefix="/audio",
@@ -67,6 +67,16 @@ async def update_playback_states(playback_states: PlaybackState) -> PlaybackStat
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/set/player/volume")
+async def set_audio_volume(volume: FloatValue):
+    try:
+        print(volume.value)
+        audio_player.set_volume(volume.value)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
 @router.get("/get/player/current-frame")
 async def get_current_frame() -> JSONResponse:
     try:
@@ -76,13 +86,12 @@ async def get_current_frame() -> JSONResponse:
 
 
 @router.post("/set/player/current-frame")
-async def set_current_frame(value: int) -> JSONResponse:
+async def set_current_frame(value: int):
     try:
         audio_player.set_current_frame(value)
-        return {"message": f"Changed current frame to {value}"}
     except Exception as e:
-        # Handle any exceptions that may occur during processing
-        print(e)
         raise HTTPException(status_code=500, detail=str(e))
+
+
 
 
