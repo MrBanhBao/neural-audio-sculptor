@@ -2,7 +2,7 @@
 	import { IconPlaylist } from '@tabler/icons-svelte';
 	import Modal from '../utils/Modal.svelte';
 	import Finder from '$lib/components/finder/Finder.svelte';
-	import { loadAudioFile } from '$lib/apis/api';
+	import { loadAudioFile } from '$lib/apis/audio-api';
 	import { audioMetaData } from '$lib/stores/store';
 	import { onDestroy } from 'svelte';
 

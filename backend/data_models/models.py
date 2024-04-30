@@ -43,6 +43,20 @@ class FrontendConfig(BaseModel):
     port: int
 
 
+class AudioConfig(BaseModel):
+    """
+    Represents the configurations for audio settings.
+
+    Attributes:
+        host (str): IP of the host of the API server.
+        hop_length (int): Port number of the running API server.
+    """
+
+    sample_rate: int
+    hop_length: int
+    block_size: int
+
+
 class Config(BaseModel):
     """
     Represents the configurations for the backend and frontend part of the application.
@@ -54,6 +68,7 @@ class Config(BaseModel):
 
     backend: BackendConfig
     frontend: FrontendConfig
+    audio: AudioConfig
 
     @classmethod
     def load(cls, config_file):
@@ -70,12 +85,13 @@ class Config(BaseModel):
             config_dict = yaml.safe_load(f)
             backend = BackendConfig(**config_dict["backend"])
             frontend = FrontendConfig(**config_dict["frontend"])
+            audio = AudioConfig(**config_dict["audio"])
 
         if backend.device is None:
             backend.device = torch.device(
                 "cuda:0" if (torch.cuda.is_available()) else "cpu"
             )
-        return cls(backend=backend, frontend=frontend)
+        return cls(backend=backend, frontend=frontend, audio=audio)
 
 
 class File(BaseModel):
@@ -200,3 +216,9 @@ class AudioMetaData(BaseModel):
 
 class StringValue(BaseModel):
     value: str
+
+
+class PlaybackState(BaseModel):
+    play: bool = False
+    loop: bool = True
+    mute: bool = False

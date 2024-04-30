@@ -45,13 +45,13 @@ class AudioLoader:
             path, sample_rate=self.sample_rate
         )
 
-        audio_meta_data = self.load_meta_data(
+        audio_meta_data = self._load_meta_data(
             path=path, sample_rate=int(sample_rate), num_frames=len(audio_data)
         )
 
         return audio_data, audio_meta_data
 
-    def load_meta_data(self, path: str, sample_rate: int, num_frames: int) -> AudioMetaData:
+    def _load_meta_data(self, path: str, sample_rate: int, num_frames: int) -> AudioMetaData:
         if TinyTag.is_supported(path):
             tag = TinyTag.get(path, image=True)
 

@@ -19,7 +19,11 @@ type Config = {
 	}
 	frontend: {
 		host: string;
-		port: number
+		port: number;
+	}
+	audio: {
+		sample_rate: number;
+		hop_length: number;
 	}
 }
 
@@ -46,4 +50,10 @@ type AudioMetaData = {
 	sample_rate: number;
 	duration: number;
 	image: string;
+}
+
+type PlaybackState = {
+	play: boolean;
+	loop: boolean;
+	mute: boolean;
 }

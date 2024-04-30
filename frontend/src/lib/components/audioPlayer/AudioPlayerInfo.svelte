@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { audioMetaData } from '$lib/stores/store';
-	import { onMount, onDestroy } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { loadAudioCover } from '$lib/apis/api';
+	import { loadAudioCover } from '$lib/apis/audio-api';
 
 	let songTitle: string | undefined = undefined;
 	let artist: string | undefined = undefined;
