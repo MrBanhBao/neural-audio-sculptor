@@ -32,3 +32,17 @@ type TypeFolder = {
 	name: string;
 	files: Array<TypeFile | TypeFolder>
 }
+
+type StringValue = {
+	value: string;
+}
+
+type AudioMetaData = {
+	artist: string,
+	title: string,
+	file_name: string,
+	num_frames: number,
+	sample_rate: number,
+	duration: number
+	image: string
+}

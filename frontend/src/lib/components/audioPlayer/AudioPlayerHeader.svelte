@@ -2,13 +2,20 @@
 	import { IconPlaylist } from '@tabler/icons-svelte';
 	import Modal from '../utils/Modal.svelte';
 	import Finder from '$lib/components/finder/Finder.svelte';
+	import { loadAudioFile } from '$lib/apis/api';
+	import { audioMetaData } from '$lib/stores/store';
+	import { onDestroy } from 'svelte';
 
 	let fileName = 'None';
 	let showModal = false;
 
-	function test() {
-		console.log('I am a test function.');
-	}
+	const unsubscribe = audioMetaData.subscribe(() => {
+		fileName = $audioMetaData.file_name;
+	});
+
+	onDestroy(() => {
+		unsubscribe();
+	});
 </script>
 
 <header class="card-header flex items-center">
@@ -24,5 +31,5 @@
 </header>
 
 <Modal bind:showModal title="Music Finder">
-	<Finder configKeyName="music_dir" endpointFunction={test}></Finder>
+	<Finder configKeyName="music_dir" endpointFunction={loadAudioFile}></Finder>
 </Modal>

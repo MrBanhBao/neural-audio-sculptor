@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { IconFileMusic, IconFile, IconRobot } from '@tabler/icons-svelte';
+	import { audioMetaData } from '$lib/stores/store';
 
 	export let name: string;
 	export let path: string;
@@ -19,8 +20,13 @@
 	const pickleFileExtensions: string[] = ['pkl'];
 
 	async function handleClick() {
-		endpointFunction();
-		console.log('Clicked');
+		const value: StringValue = { value: path };
+		const response = await endpointFunction(value);
+
+		if (response?.ok) {
+			const data = (await response.json()) as AudioMetaData;
+			audioMetaData.set(data);
+		}
 	}
 
 	$: fileExtention = name.slice(name.lastIndexOf('.') + 1).toLocaleLowerCase();

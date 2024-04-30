@@ -30,29 +30,37 @@ let PORT: number | unknown = 8000;
 // API endpoints
 
 export async function getConfig() {
-    try {
-        const response = await fetch(`http://${HOST}:${PORT}/api/get/config`)
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/config`)
 
-        if (!response.ok) {
-            throw new Error(response.statusText)
-        }
-
-        return response;
-    } catch (error) {
-        console.error('Error uploading image:', error);
+    if (!response.ok) {
+        throw new Error(response.statusText)
     }
+
+    return response;
 }
 
 export async function getFileStructure(path: string) {
-    try {
-        const response = await fetch(`http://${HOST}:${PORT}/api/get/filestructure/?path=${path}`)
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/filestructure/?path=${path}`)
 
-        if (!response.ok) {
-            throw new Error(response.statusText)
-        }
-
-        return response;
-    } catch (error) {
-        console.error('Error while fetching file structure', error);
+    if (!response.ok) {
+        throw new Error(response.statusText)
     }
-} 
+
+    return response;
+}
+
+
+export async function loadAudioFile(path: StringValue) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/audio/load/file`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(path)
+    })
+
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+
+}

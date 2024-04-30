@@ -1,12 +1,4 @@
 <script lang="ts">
-	import {
-		IconPlayerPlayFilled,
-		IconPlayerPauseFilled,
-		IconVolume,
-		IconVolumeOff,
-		IconRepeat,
-		IconRepeatOff
-	} from '@tabler/icons-svelte';
 	import AudioPlayerHeader from './AudioPlayerHeader.svelte';
 	import AudioPlayerInfo from './AudioPlayerInfo.svelte';
 	import AudioPlayerTimeCtrl from './AudioPlayerTimeCtrl.svelte';

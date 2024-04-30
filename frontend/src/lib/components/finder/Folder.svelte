@@ -11,10 +11,6 @@
 	function toggle() {
 		expanded = !expanded;
 	}
-
-	function test() {
-		console.log('I am a test function');
-	}
 </script>
 
 <button class="flex flex-row items-center" on:click={toggle}>
@@ -31,7 +27,7 @@
 		{#each files as file}
 			<li>
 				{#if 'files' in file}
-					<svelte:self {...file} />
+					<svelte:self {...file} {endpointFunction} />
 				{:else}
 					<File {...file} {endpointFunction} />
 				{/if}
