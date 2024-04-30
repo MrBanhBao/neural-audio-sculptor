@@ -42,9 +42,9 @@
 		on:click={() => togglePlaybackState('loop')}
 	>
 		{#if playbackState.loop}
-			<IconRepeatOff size="24"></IconRepeatOff>
-		{:else}
 			<IconRepeat size="24"></IconRepeat>
+		{:else}
+			<IconRepeatOff size="24"></IconRepeatOff>
 		{/if}
 	</button>
 	<button
@@ -64,9 +64,9 @@
 		on:click={() => togglePlaybackState('mute')}
 	>
 		{#if playbackState.mute}
-			<IconVolume size="24"></IconVolume>
-		{:else}
 			<IconVolumeOff size="24"></IconVolumeOff>
+		{:else}
+			<IconVolume size="24"></IconVolume>
 		{/if}
 	</button>
 </div>
