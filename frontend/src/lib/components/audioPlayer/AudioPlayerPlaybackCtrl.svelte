@@ -8,7 +8,7 @@
 		IconRepeatOff
 	} from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
-	import { getPlaybackState, updatePlaybackState, updateAudioVolume } from '$lib/apis/audio-api';
+	import { getPlaybackState, updatePlaybackState, setAudioVolume } from '$lib/apis/audio-api';
 
 	let playbackState: PlaybackState = { play: false, loop: true, mute: false };
 	let volume: number = 1;
@@ -21,7 +21,7 @@
 
 	async function handleVolumeChange(event: any) {
 		volume = event.target.valueAsNumber;
-		const response = await updateAudioVolume({ value: volume } as NumberValue);
+		const response = await setAudioVolume({ value: volume } as NumberValue);
 	}
 
 	async function togglePlaybackState(playbackType: string) {

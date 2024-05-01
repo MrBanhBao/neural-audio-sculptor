@@ -54,7 +54,7 @@ export async function updatePlaybackState(playbackState: PlaybackState) {
     return response;
 }
 
-export async function updateAudioVolume(volume: NumberValue) {
+export async function setAudioVolume(volume: NumberValue) {
     const response = await fetch(`http://${HOST}:${PORT}/api/audio/set/player/volume`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,6 +70,20 @@ export async function updateAudioVolume(volume: NumberValue) {
 
 export async function getCurrentFrame() {
     const response = await fetch(`http://${HOST}:${PORT}/api/audio/get/player/current-frame`);
+
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
+export async function setCurrentFrame(frame: NumberValue) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/audio/set/player/current-frame`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(frame)
+    });
 
     if (!response.ok) {
         throw new Error(response.statusText)

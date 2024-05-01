@@ -1,15 +1,17 @@
 <script lang="ts">
-	import { audioMetaData } from '$lib/stores/store';
-	import { onDestroy } from 'svelte';
+	import { audioMetaData, currentFrame } from '$lib/stores/store';
+	import { onDestroy, onMount } from 'svelte';
+	import { getCurrentFrame, setCurrentFrame } from '$lib/apis/audio-api';
 
-	let currentFrame = 0;
-	let numberOfFrames: number | null = null;
+	let interval;
 
-	let currentTimeStamp = '--:--';
-	let endTimeStamp: string;
+	$: numberOfFrames = $audioMetaData.num_frames;
+
+	$: currentTimeStamp = calculateTimestamp($currentFrame, $audioMetaData.sample_rate);
+	$: endTimeStamp = calculateTimestamp($audioMetaData.num_frames, $audioMetaData.sample_rate);
 
 	function calculateTimestamp(frame: number, sampleRate: number): string {
-		if (frame == null) {
+		if (frame == null || sampleRate == null) {
 			return '--:--';
 		} else {
 			let minutes: number = frame / sampleRate / 60;
@@ -18,13 +20,23 @@
 		}
 	}
 
-	const unsubscribe = audioMetaData.subscribe(() => {
-		numberOfFrames = $audioMetaData.num_frames;
-		endTimeStamp = calculateTimestamp($audioMetaData.num_frames, $audioMetaData.sample_rate);
+	async function handleCurrentFrameChange(event: any) {
+		let frame = event.target.valueAsNumber;
+		const response = await setCurrentFrame({ value: frame } as NumberValue);
+	}
+
+	async function updateCurrentFrame() {
+		const response = await getCurrentFrame();
+		const updatedFrame = (await response.json()).value;
+		currentFrame.set(updatedFrame);
+	}
+
+	onMount(() => {
+		interval = setInterval(updateCurrentFrame, 500);
 	});
 
 	onDestroy(() => {
-		unsubscribe();
+		clearInterval(interval);
 	});
 </script>
 
@@ -32,10 +44,11 @@
 	<input
 		class="mt-4"
 		type="range"
-		bind:value={currentFrame}
+		bind:value={$currentFrame}
 		min="0"
 		max={numberOfFrames}
 		step="1"
+		on:input={handleCurrentFrameChange}
 	/>
 	<div class="time-container flex flex-row justify-between">
 		<span>{currentTimeStamp}</span>
