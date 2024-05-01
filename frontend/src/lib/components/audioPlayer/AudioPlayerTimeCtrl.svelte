@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { audioMetaData, currentFrame } from '$lib/stores/store';
+	import { audioMetaData, currentFrame, isPlaying } from '$lib/stores/store';
 	import { onDestroy, onMount } from 'svelte';
 	import { getCurrentFrame, setCurrentFrame } from '$lib/apis/audio-api';
 
@@ -26,9 +26,11 @@
 	}
 
 	async function updateCurrentFrame() {
-		const response = await getCurrentFrame();
-		const updatedFrame = (await response.json()).value;
-		currentFrame.set(updatedFrame);
+		if ($isPlaying) {
+			const response = await getCurrentFrame();
+			const updatedFrame = (await response.json()).value;
+			currentFrame.set(updatedFrame);
+		}
 	}
 
 	onMount(() => {

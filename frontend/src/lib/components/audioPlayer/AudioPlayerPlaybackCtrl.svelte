@@ -8,6 +8,7 @@
 		IconRepeatOff
 	} from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
+	import { isPlaying } from '$lib/stores/store';
 	import { getPlaybackState, updatePlaybackState, setAudioVolume } from '$lib/apis/audio-api';
 
 	let playbackState: PlaybackState = { play: false, loop: true, mute: false };
@@ -35,6 +36,7 @@
 
 		const response = await updatePlaybackState(tempPlaybackState);
 		playbackState = await response.json();
+		isPlaying.set(playbackState.play);
 	}
 
 	onMount(async () => {
