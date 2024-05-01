@@ -95,20 +95,12 @@ class AudioPlayer:
         return out_audio_chunk
 
     def _check_loop(self) -> None:
-        print("loop:", self.playback_state.loop)
-        print("play:", self.playback_state.play)
         if self.playback_state.loop and self.playback_state.play:
             self.current_frame = 0
-            print("ssssframe:", self.current_frame)
-            print("loop:", self.playback_state.loop)
-            print("play:", self.playback_state.play)
         else:
             self.playback_state.play = False
             self.current_frame = 0
             self.out_stream.stop()
-            print("frame:", self.current_frame)
-            print("loop:", self.playback_state.loop)
-            print("play:", self.playback_state.play)
 
     def get_playback_states(self) -> PlaybackState:
         return self.playback_state
