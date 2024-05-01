@@ -61,7 +61,7 @@ class AudioPlayer:
                 channels=list(self.audio_tracks.values())[0].shape[1],
                 blocksize=self.block_size,
                 callback=self._callback,
-                finished_callback=self._check_loop,
+                #finished_callback=self._check_loop,
             )
 
             if self.play:
@@ -79,6 +79,10 @@ class AudioPlayer:
         outdata[:chunk_size] = self.volume * out_audio_chunk
         self.current_frame += chunk_size
 
+        # signals stream to end
+        if self.current_frame >= len(self.audio_tracks['main']):
+            self._check_loop()
+
     def _create_out_audio_chunk(self, chunk_size: int, frames: int) -> npt.NDArray[np.float32]:
         out_audio_chunk: npt.NDArray[np.float32] = np.zeros((chunk_size, 2))
         for track_name, selected in self.selected_audio_tracks.items():
@@ -91,13 +95,16 @@ class AudioPlayer:
         return out_audio_chunk
 
     def _check_loop(self) -> None:
+        print("loop:", self.playback_state.loop)
+        print("play:", self.playback_state.play)
         if self.playback_state.loop and self.playback_state.play:
             self.current_frame = 0
-            print("frame:", self.current_frame)
+            print("ssssframe:", self.current_frame)
             print("loop:", self.playback_state.loop)
             print("play:", self.playback_state.play)
         else:
             self.playback_state.play = False
+            self.current_frame = 0
             self.out_stream.stop()
             print("frame:", self.current_frame)
             print("loop:", self.playback_state.loop)
