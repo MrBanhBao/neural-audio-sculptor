@@ -71,3 +71,16 @@ def __create_file_structure(path: str) -> List[Union[Folder, File]]:
             file_structure.append(File(**file_item))
 
     return file_structure
+
+def create_directory(path: str) -> None:
+    """
+    Create a directory if it does not exist.
+
+    Parameters:
+        path (str): The path of the directory to be created.
+    """
+    if not os.path.exists(path):
+        try:
+            os.makedirs(path)
+        except Exception as e:
+            print(f"Error creating directory '{path}': {e}")

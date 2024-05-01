@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 
 import utils.store as store
 from core.audio import AudioLoader, AudioPlayer
+from core.audio.utils import split_audio
 from data_models import AudioMetaData, StringValue, PlaybackState, FloatValue, IntegerValue
 
 router = APIRouter(
@@ -27,8 +28,9 @@ def load_audio(audio_path: StringValue) -> AudioMetaData:
     try:
         print(f"Loading Audio: {audio_path}...")
 
-        audio_data_tracks = {}
         audio_data, audio_meta_data = audio_loader.load_audio(audio_path.value)
+
+        audio_data_tracks = split_audio(audio_data)
         audio_data_tracks["main"] = audio_data
 
         audio_player.set_audio_data_tracks(audio_data_tracks)
