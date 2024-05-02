@@ -58,7 +58,8 @@
 	{#if error}
 		<div>Error: Failed to load file structure!</div>
 	{:else}
-		<span class="flex"><ProgressRadial class="mr-2" width="w-5" text />Loading...</span>
+		<!-- <span class="flex"><ProgressRadial class="mr-2" width="w-5" text />Loading...</span> -->
+		<div>Error: Failed to load file structure!</div>
 	{/if}
 {:else}
 	<Folder name={fileStructure.name} files={fileStructure.files} {endpointFunction}></Folder>

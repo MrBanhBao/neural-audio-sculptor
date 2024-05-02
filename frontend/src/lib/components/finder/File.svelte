@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { IconFileMusic, IconFile, IconRobot } from '@tabler/icons-svelte';
-	import { audioMetaData } from '$lib/stores/store';
+	import { audioMetaData, statusFeedback } from '$lib/stores/store';
+	import SquareLetterP from '@tabler/icons-svelte/IconSquareLetterP.svelte';
 
 	export let name: string;
 	export let path: string;
@@ -20,12 +21,16 @@
 	const pickleFileExtensions: string[] = ['pkl'];
 
 	async function handleClick() {
+		statusFeedback.set({ status: 'pending', message: 'Loading and splitting audio.' });
+
 		const value: StringValue = { value: path };
 		const response = await endpointFunction(value);
-
 		if (response?.ok) {
 			const data = (await response.json()) as AudioMetaData;
 			audioMetaData.set(data);
+			statusFeedback.set({ status: 'successfull', message: 'Done loading and splitting audio.' });
+		} else {
+			statusFeedback.set({ status: 'failed', message: response.statusText });
 		}
 	}
 

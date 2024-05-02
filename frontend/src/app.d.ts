@@ -61,3 +61,8 @@ type PlaybackState = {
 	loop: boolean;
 	mute: boolean;
 }
+
+type StatusFeedback = {
+	status: "pending" | "successfull" | "failed" | "idle";
+	message: string;
+}

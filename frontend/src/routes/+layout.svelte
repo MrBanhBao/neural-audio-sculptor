@@ -2,7 +2,7 @@
 	import '../app.postcss';
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
+	import Footer from '$lib/components/footer/Footer.svelte';
 	import { onMount } from 'svelte';
 	import yaml from 'js-yaml';
 	import { config } from '$lib/stores/store';

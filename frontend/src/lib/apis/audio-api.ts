@@ -8,10 +8,6 @@ export async function loadAudioFile(path: StringValue) {
         body: JSON.stringify(path)
     })
 
-    if (!response.ok) {
-        throw new Error(response.statusText)
-    }
-
     return response;
 }
 
