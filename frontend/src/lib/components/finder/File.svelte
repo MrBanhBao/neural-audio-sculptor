@@ -30,6 +30,7 @@
 			audioMetaData.set(data);
 			statusFeedback.set({ status: 'successfull', message: 'Done loading and splitting audio.' });
 		} else {
+			console.log("failed")
 			statusFeedback.set({ status: 'failed', message: response.statusText });
 		}
 	}

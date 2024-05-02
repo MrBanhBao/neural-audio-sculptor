@@ -4,7 +4,7 @@
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
 	function setTimer() {
-		if ($statusFeedback.status != 'idle') {
+		if ($statusFeedback.status == 'successfull' || $statusFeedback.status == 'failed') {
 			setTimeout(() => {
 				statusFeedback.set({ status: 'idle' } as StatusFeedback);
 			}, 3000);
