@@ -204,14 +204,13 @@ class StyleGanStore(BaseModel):
 
 
 class AudioMetaData(BaseModel):
-    artist: str
-    title: str
+    artist: Union[str, None]
+    title: Union[str, None]
     path: str
     file_name: str
     num_frames: int
     sample_rate: int
     duration: float
-    image: str
 
 
 class StringValue(BaseModel):

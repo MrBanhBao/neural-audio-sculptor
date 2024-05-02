@@ -84,3 +84,10 @@ def create_directory(path: str) -> None:
             os.makedirs(path)
         except Exception as e:
             print(f"Error creating directory '{path}': {e}")
+
+
+def is_splitted(files: List[str]) -> bool:
+    for file_name in files:
+        if not os.path.exists(file_name):
+            return False
+    return True

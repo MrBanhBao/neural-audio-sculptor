@@ -1,4 +1,3 @@
-import base64
 import io
 import math
 from typing import Tuple
@@ -55,16 +54,6 @@ class AudioLoader:
         if TinyTag.is_supported(path):
             tag = TinyTag.get(path, image=True)
 
-            img_base64 = None
-            if tag.get_image() is not None or tag.get_image() == "":
-                img_bytes = tag.get_image()
-                img_pil = Image.open(io.BytesIO(img_bytes))
-
-                with io.BytesIO() as buf:
-                    img_pil.save(buf, format="JPEG")
-                    img_bytes = buf.getvalue()
-                    img_base64 = base64.b64encode(img_bytes)
-
             data = {
                 "artist": tag.artist,
                 "title": tag.title,
@@ -73,7 +62,6 @@ class AudioLoader:
                 "sample_rate": sample_rate,
                 "num_frames": num_frames,
                 "duration": math.ceil(tag.duration),  # in seconds
-                "image": img_base64
             }
             return AudioMetaData(**data)
 

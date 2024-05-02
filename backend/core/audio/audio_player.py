@@ -64,7 +64,7 @@ class AudioPlayer:
                 #finished_callback=self._check_loop,
             )
 
-            if self.play:
+            if self.playback_state.play:
                 self.out_stream.start()
 
     def _callback(self, outdata, frames, time, status) -> None:

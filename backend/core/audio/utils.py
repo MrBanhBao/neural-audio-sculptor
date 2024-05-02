@@ -1,15 +1,16 @@
-import hashlib
 import os
 from typing import Dict
 
 import numpy as np
 import numpy.typing as npt
+from scipy.io import wavfile
 from spleeter.separator import Separator
 
 import utils.store as store
-from utils import create_directory
 
 cache_dir = store.config.backend.cache_dir
+sample_rate = store.config.audio.sample_rate
+track_names = store.track_names
 seperator = Separator("spleeter:5stems")
 
 
@@ -26,7 +27,7 @@ def make_mono(audio_data: npt.NDArray[np.float32]) -> npt.NDArray:
     return (audio_data[:, 0] + audio_data[:, 1]) / 2
 
 
-def split_audio(audio_data: npt.NDArray[np.float32]) -> Dict[str, npt.NDArray[np.float32]]:
+def split_audio(audio_data: npt.NDArray[np.float32], save_dir: str) -> Dict[str, npt.NDArray[np.float32]]:
     """
     Splits Audio data in 5 components (vocals, drums, bass, piano, other)
     by using spleeter in this environment.
@@ -35,21 +36,14 @@ def split_audio(audio_data: npt.NDArray[np.float32]) -> Dict[str, npt.NDArray[np
         audio_data (npt.NDArray[np.float32]): Audio data as numpy array
 
     Returns:
-        splitted_aduio (Dict[str, NDArray[Shape["*, 2"], Float32]]):
+        splitted_audio (Dict[str, NDArray[Shape["*, 2"], Float32]]):
         Dict containing audio data of keys ('vocals', 'drums', 'bass', 'piano', 'other')
     """
 
-    hash_value = hashlib.sha1(audio_data).hexdigest()
+    splitted_audio = seperator.separate(audio_data)
 
-    directory = os.path.join(cache_dir, hash_value)
-    create_directory(directory)
+    for track_name, audio in splitted_audio.items():
+        file = os.path.join(save_dir, f"{track_name}.wav")
+        wavfile.write(file, sample_rate, audio)
 
-    splits_data_file = os.path.join(directory, "splits.npy")
-
-    if not os.path.exists(splits_data_file):
-        result = seperator.separate(audio_data)
-        np.save(splits_data_file, result)
-        return result
-    else:
-        print(f'{hash_value}, Found in cache.')
-        return np.load(splits_data_file, allow_pickle=True).item()
+    return splitted_audio
