@@ -24,6 +24,7 @@ type Config = {
 	audio: {
 		sample_rate: number;
 		hop_length: number;
+		frame_length: number;
 	}
 }
 

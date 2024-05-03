@@ -1,6 +1,7 @@
 import os
 from typing import Dict
 
+import librosa
 import numpy as np
 import numpy.typing as npt
 from scipy.io import wavfile
@@ -8,9 +9,10 @@ from spleeter.separator import Separator
 
 import utils.store as store
 
-cache_dir = store.config.backend.cache_dir
 sample_rate = store.config.audio.sample_rate
-track_names = store.track_names
+frame_length = store.config.audio.frame_length
+hop_length = store.config.audio.hop_length
+
 seperator = Separator("spleeter:5stems")
 
 
@@ -47,3 +49,14 @@ def split_audio(audio_data: npt.NDArray[np.float32], save_dir: str) -> Dict[str,
         wavfile.write(file, sample_rate, audio)
 
     return splitted_audio
+
+def calulate_audio_features(audio_tracks: Dict[str, npt.NDArray[np.float32]]):
+    for key, value in audio_tracks.items():
+        audio_feature = librosa.feature.rms(
+            y=make_mono(value),
+            frame_length=frame_length,
+            hop_length=hop_length,
+            center=True,
+        )
+
+    print("Feature calculation done!!!!")

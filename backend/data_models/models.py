@@ -53,8 +53,9 @@ class AudioConfig(BaseModel):
     """
 
     sample_rate: int
-    hop_length: int
     block_size: int
+    hop_length: int
+    frame_length: int
 
 
 class Config(BaseModel):

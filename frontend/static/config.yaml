@@ -12,3 +12,4 @@ audio:
   sample_rate: 44100
   block_size: 512
   hop_length: 512
+  frame_length: 512

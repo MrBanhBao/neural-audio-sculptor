@@ -1,12 +1,12 @@
 import os
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Response, BackgroundTasks
 from fastapi.responses import JSONResponse, FileResponse
 
 import utils.store as store
 from core.audio import AudioLoader, AudioPlayer
-from core.audio.utils import split_audio
+from core.audio.utils import split_audio, calulate_audio_features
 from data_models import AudioMetaData, StringValue, PlaybackState, FloatValue, IntegerValue, SelectedAudioTrack
 from utils import is_splitted, create_directory
 
@@ -30,27 +30,29 @@ async def root():
 
 
 @router.post("/load/file")
-def load_audio(audio_path: StringValue) -> AudioMetaData:
+def load_audio(audio_path: StringValue, background_tasks: BackgroundTasks) -> AudioMetaData:
+    print(f"Loading Audio: {audio_path}...")
 
-        print(f"Loading Audio: {audio_path}...")
+    audio_data, audio_meta_data = audio_loader.load_audio(audio_path.value)
 
-        audio_data, audio_meta_data = audio_loader.load_audio(audio_path.value)
+    folder_name = os.path.splitext(audio_meta_data.file_name)[0]
+    directory = os.path.join(cache_dir, folder_name)
 
-        folder_name = os.path.splitext(audio_meta_data.file_name)[0]
-        directory = os.path.join(cache_dir, folder_name)
-
-        files = [os.path.join(directory, f"{track}.wav") for track in track_names]
-        if not is_splitted(files):
-            create_directory(directory)
-            audio_data_tracks = split_audio(audio_data=audio_data, save_dir=directory)
-        else:
-            print(f'Found splitted audio data for {folder_name}.')
-            audio_data_tracks = load_audio_data_tracks(directory, track_names)
+    files = [os.path.join(directory, f"{track}.wav") for track in track_names]
+    if not is_splitted(files):
+        create_directory(directory)
+        audio_data_tracks = split_audio(audio_data=audio_data, save_dir=directory)
+    else:
+        print(f'Found splitted audio data for {folder_name}.')
+        audio_data_tracks = load_audio_data_tracks(directory, track_names)
         audio_data_tracks["main"] = audio_data
 
-        audio_player.set_audio_data_tracks(audio_data_tracks)
-        print("Done!")
-        return audio_meta_data
+    # calculate in brackground
+    background_tasks.add_task(calulate_audio_features, audio_data_tracks)
+
+    audio_player.set_audio_data_tracks(audio_data_tracks)
+    print("Done!")
+    return audio_meta_data
 
 
 def load_audio_data_tracks(directory: str, track_names: List[str]):
