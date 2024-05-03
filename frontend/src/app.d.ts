@@ -66,3 +66,9 @@ type StatusFeedback = {
 	status: "pending" | "successfull" | "failed" | "idle";
 	message: string;
 }
+
+type WaveSurferTrack = {
+	name: string;
+	active: boolean;
+	url: string;
+}

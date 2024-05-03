@@ -2,7 +2,7 @@ backend:
   host: '127.0.0.1'
   port: 8000
   device: null
-  cache_dir: '/home/hao/Workspace/neural-audio-sculptor/frontend/static/.cache'
+  cache_dir: '/home/hao/Workspace/neural-audio-sculptor/backend/.cache'
   music_dir: '/home/hao/Music/deemix Music'
   stylegan_checkpoints: '/home/hao/Documents/stylegan2_models'
 frontend:

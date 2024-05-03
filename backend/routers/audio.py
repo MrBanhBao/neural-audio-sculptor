@@ -2,7 +2,7 @@ import os
 from typing import List
 
 from fastapi import APIRouter, HTTPException, Response
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 
 import utils.store as store
 from core.audio import AudioLoader, AudioPlayer
@@ -74,7 +74,7 @@ def load_audio(audio_path: StringValue) -> Response:
 
 
 @router.get("/get/player/playback-state")
-async def get_playback_states() -> PlaybackState:
+def get_playback_states() -> PlaybackState:
     try:
         return audio_player.get_playback_states()
     except Exception as e:
@@ -82,7 +82,7 @@ async def get_playback_states() -> PlaybackState:
 
 
 @router.post("/update/player/playback-state")
-async def update_playback_states(playback_states: PlaybackState) -> PlaybackState:
+def update_playback_states(playback_states: PlaybackState) -> PlaybackState:
     try:
         audio_player.set_playback_states(playback_states)
         return audio_player.get_playback_states()
@@ -91,7 +91,7 @@ async def update_playback_states(playback_states: PlaybackState) -> PlaybackStat
 
 
 @router.post("/set/player/volume")
-async def set_audio_volume(volume: FloatValue):
+def set_audio_volume(volume: FloatValue):
     try:
         print(volume.value)
         audio_player.set_volume(volume.value)
@@ -101,7 +101,7 @@ async def set_audio_volume(volume: FloatValue):
 
 
 @router.get("/get/player/current-frame")
-async def get_current_frame() -> JSONResponse:
+def get_current_frame() -> JSONResponse:
     try:
         return JSONResponse(content={"value": audio_player.current_frame})
     except Exception as e:
@@ -109,12 +109,13 @@ async def get_current_frame() -> JSONResponse:
 
 
 @router.post("/set/player/current-frame")
-async def set_current_frame(frame: IntegerValue):
+def set_current_frame(frame: IntegerValue):
     try:
         audio_player.set_current_frame(frame.value)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
-
+@router.get("/get/file")
+def get_audio(path: str):
+    return FileResponse(path)

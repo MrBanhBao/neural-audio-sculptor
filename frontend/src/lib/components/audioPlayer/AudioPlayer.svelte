@@ -12,5 +12,4 @@
 		<AudioPlayerTimeCtrl />
 		<AudioPlayerPlaybackCtrl />
 	</section>
-	<footer class="card-footer">(footer)</footer>
 </div>

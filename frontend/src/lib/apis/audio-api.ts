@@ -87,3 +87,13 @@ export async function setCurrentFrame(frame: NumberValue) {
 
     return response;
 }
+
+export async function getAudioFile(path: string) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/audio/get/file/?path=${path}`);
+
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
