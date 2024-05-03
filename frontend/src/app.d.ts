@@ -72,3 +72,8 @@ type WaveSurferTrack = {
 	active: boolean;
 	url: string;
 }
+
+type SelectedAudioTrack = {
+	name: string;
+	active: boolean
+}

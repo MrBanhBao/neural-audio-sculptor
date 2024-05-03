@@ -229,3 +229,8 @@ class PlaybackState(BaseModel):
     play: bool = False
     loop: bool = True
     mute: bool = False
+
+
+class SelectedAudioTrack(BaseModel):
+    name: str
+    active: bool

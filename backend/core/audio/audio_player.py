@@ -119,7 +119,7 @@ class AudioPlayer:
         else:
             self.volume = self.previous_volume
 
-    def modify_selected_audio_tracks(self, key: str, value: bool) -> bool:
+    def set_selected_audio_tracks(self, key: str, value: bool) -> bool:
         if key in self.selected_audio_tracks:
             self.selected_audio_tracks[key] = value
             return True

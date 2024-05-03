@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse, FileResponse
 import utils.store as store
 from core.audio import AudioLoader, AudioPlayer
 from core.audio.utils import split_audio
-from data_models import AudioMetaData, StringValue, PlaybackState, FloatValue, IntegerValue
+from data_models import AudioMetaData, StringValue, PlaybackState, FloatValue, IntegerValue, SelectedAudioTrack
 from utils import is_splitted, create_directory
 
 router = APIRouter(
@@ -119,3 +119,15 @@ def set_current_frame(frame: IntegerValue):
 @router.get("/get/file")
 def get_audio(path: str):
     return FileResponse(path)
+
+
+@router.post("/set/player/selected-audio-track")
+def set_current_frame(data: SelectedAudioTrack):
+    try:
+        success = audio_player.set_selected_audio_tracks(data.name, data.active)
+        if success:
+            return JSONResponse(status_code=200, content=f"Successfully set {data.name} to {data.active}")
+        else:
+            return JSONResponse(status_code=500, content=f"Failed set {data.name} to {data.active}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { currentFrame } from '$lib/stores/store';
+	import { currentFrame, statusFeedback } from '$lib/stores/store';
 	import WaveSurfer from 'wavesurfer.js';
 	import { onMount } from 'svelte';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
-	import { getAudioFile } from '$lib/apis/audio-api';
+	import { getAudioFile, setSelectedAudioTrack } from '$lib/apis/audio-api';
 
 	export let name: string;
 	export let active: boolean = false;
@@ -47,8 +47,6 @@
 		updateWavePlot(url);
 	}
 
-	$: console.log(url);
-
 	function updateTime(time: number) {
 		if (wavesurfer) {
 			wavesurfer.setTime(time);
@@ -67,10 +65,34 @@
 			});
 		}
 	}
+
+	async function handleChange(event) {
+		const state = event.target.checked;
+		const message = `Set audio track: ${name} to ${state}.`;
+		statusFeedback.set({ status: 'pending', message: message });
+		const selectedAudioTrack: SelectedAudioTrack = { name: name, active: state };
+
+		const response = await setSelectedAudioTrack(selectedAudioTrack);
+		if (response?.ok) {
+			console.log(response);
+			statusFeedback.set({
+				status: 'successfull',
+				message: message
+			});
+		} else {
+			console.log('failed');
+			statusFeedback.set({
+				status: 'failed',
+				message: message
+			});
+		}
+	}
 </script>
 
 <tr class="h-2">
-	<td class="centered"><SlideToggle name="slide" bind:checked={active}></SlideToggle></td>
+	<td class="centered"
+		><SlideToggle name="slide" bind:checked={active} on:change={handleChange}></SlideToggle></td
+	>
 	<td class="centered">{name}</td>
 	<td class="centered"><div id={name + '-waveform'}></div></td>
 </tr>
