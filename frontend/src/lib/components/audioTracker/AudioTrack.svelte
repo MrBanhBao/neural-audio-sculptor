@@ -3,12 +3,13 @@
 	import WaveSurfer from 'wavesurfer.js';
 	import { onMount } from 'svelte';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
-	import { getAudioFile, setSelectedAudioTrack } from '$lib/apis/audio-api';
+	import { getAudioFile, setSelectedAudioTrack, setCurrentFrame } from '$lib/apis/audio-api';
 
 	export let name: string;
 	export let active: boolean = false;
 	export let url: string = '';
 	export let sampleRate: number = 44100;
+	import { fade } from 'svelte/transition';
 
 	let wavesurfer: any;
 
@@ -23,7 +24,9 @@
 			progressColor: 'purple',
 			interact: false,
 			peaks: [[0]],
-			duration: 1
+			height: 60,
+			duration: 1,
+			dragToSeek: true
 		});
 
 		wavesurfer.on('ready', () => {
@@ -60,8 +63,15 @@
 
 			wavesurfer.load(url);
 
+			wavesurfer.toggleInteraction(true);
+
 			wavesurfer.on('ready', () => {
 				wavesurfer.setTime(0);
+			});
+
+			wavesurfer.on('interaction', async (newTime) => {
+				let frame = Math.ceil(newTime * sampleRate);
+				const response = await setCurrentFrame({ value: frame } as NumberValue);
 			});
 		}
 	}
