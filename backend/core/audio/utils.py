@@ -52,11 +52,75 @@ def split_audio(audio_data: npt.NDArray[np.float32], save_dir: str) -> Dict[str,
 
 def calulate_audio_features(audio_tracks: Dict[str, npt.NDArray[np.float32]]):
     for key, value in audio_tracks.items():
-        audio_feature = librosa.feature.rms(
+        rms = librosa.feature.rms(
             y=make_mono(value),
             frame_length=frame_length,
             hop_length=hop_length,
             center=True,
+        )[0]
+
+        pitches = pitches_over_time(
+            y=make_mono(value),
+            frame_length=frame_length,
+            hop_length=hop_length,
+            sr=sample_rate
         )
 
+        tempo = tempo_over_time(y=make_mono(value),
+            frame_length=frame_length,
+            hop_length=hop_length,
+            sr=sample_rate)
+
+        onset_strength = librosa.onset.onset_strength(y=make_mono(value),
+                                                      sr=sample_rate,
+                                                      hop_length=hop_length,)
+
+
+
     print("Feature calculation done!!!!")
+
+
+def energy_over_time(y: npt.NDArray[np.float32], frame_length: int=441, hop_length: int=512):
+    """
+    This function estimates energy in overlapping windows of an audio file
+
+    Args:
+        y (npt.NDArray[np.float32]): Audio Data as numpy array
+        frame_length (int): Size of the window in frames (samples)
+        hop_length (int): Hop length between windows in frames (samples)
+
+    Returns:
+        energies npt.NDArray[np.float32]: List of energy values for each window
+    """
+    energies = []
+
+    # Iterate through audio in overlapping windows
+    for start in np.arange(0, len(y), hop_length):
+        end = start + frame_length
+
+        # Ensure window stays within audio bounds
+        if end > len(y):
+            end = len(y)
+        window = y[start:end]
+
+        # Calculate energy within the window
+        energy = np.sum(window**2)
+
+        energies.append(energy)
+
+    return np.array(energies)
+
+
+def pitches_over_time(y: npt.NDArray[np.float32], frame_length: int = 441,
+                      hop_length: int = 512, sr: int = 44100):
+    chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=hop_length, n_fft=frame_length)
+    pitch = np.argmax(chroma, axis=0)
+    return pitch
+
+
+def tempo_over_time(y: npt.NDArray[np.float32], frame_length: int = 441,
+                    hop_length: int = 512, sr: int = 44100):
+    tempogram = librosa.feature.tempogram(y=y, sr=sr, hop_length=hop_length, win_length=frame_length)
+    tempo = np.average(tempogram, axis=0)
+    return tempo
+

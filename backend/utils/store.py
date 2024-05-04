@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 from data_models import Config, Transform2DArgs, Transform3DArgs
 
 CONFIG_FILE = "../frontend/static/config.yaml"
@@ -9,3 +11,5 @@ args_3D = Transform3DArgs()
 # styleGan: StyleGanStore = StyleGanStore()
 
 track_names = ['vocals', 'drums', 'bass', 'piano', 'other']
+
+features: Dict[str, Dict[str, List[float]]] = {}
