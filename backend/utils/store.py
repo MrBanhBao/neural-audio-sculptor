@@ -12,4 +12,5 @@ args_3D = Transform3DArgs()
 
 track_names = ['vocals', 'drums', 'bass', 'piano', 'other']
 
+isFeaturesReady = False
 features: Dict[str, Dict[str, List[float]]] = {}

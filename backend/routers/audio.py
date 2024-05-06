@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse, FileResponse
 
 import utils.store as store
 from core.audio import AudioLoader, AudioPlayer
-from core.audio.utils import split_audio, calulate_audio_features
+from core.audio.utils import split_audio, calculate_audio_features
 from data_models import AudioMetaData, StringValue, PlaybackState, FloatValue, IntegerValue, SelectedAudioTrack
 from utils import is_splitted, create_directory
 
@@ -32,6 +32,7 @@ async def root():
 @router.post("/load/file")
 def load_audio(audio_path: StringValue, background_tasks: BackgroundTasks) -> AudioMetaData:
     print(f"Loading Audio: {audio_path}...")
+    store.isFeaturesReady = False
 
     audio_data, audio_meta_data = audio_loader.load_audio(audio_path.value)
 
@@ -47,8 +48,8 @@ def load_audio(audio_path: StringValue, background_tasks: BackgroundTasks) -> Au
         audio_data_tracks = load_audio_data_tracks(directory, track_names)
         audio_data_tracks["main"] = audio_data
 
-    # calculate in brackground
-    background_tasks.add_task(calulate_audio_features, audio_data_tracks)
+    # calculate in background
+    background_tasks.add_task(calculate_audio_features, audio_data_tracks, folder_name)
 
     audio_player.set_audio_data_tracks(audio_data_tracks)
     print("Done!")
@@ -133,3 +134,11 @@ def set_current_frame(data: SelectedAudioTrack):
             return JSONResponse(status_code=500, content=f"Failed set {data.name} to {data.active}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/get/features")
+def get_features(path: str):
+    if store.isFeaturesReady:
+        return FileResponse(path)
+    else:
+        return JSONResponse(status_code=500, content=f"Features are not ready yet.")
+

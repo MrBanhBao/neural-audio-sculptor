@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { audioMetaData, currentFrame, isPlaying, config } from '$lib/stores/store';
+	import { audioMetaData, config } from '$lib/stores/store';
 	import AudioTrack from './AudioTrack.svelte';
 
 	const trackNames = ['main', 'vocals', 'drums', 'bass', 'piano', 'other'];

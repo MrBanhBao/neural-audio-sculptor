@@ -8,10 +8,12 @@ from scipy.io import wavfile
 from spleeter.separator import Separator
 
 import utils.store as store
+from utils import load_json, normalize_array, save_dict_as_json
 
 sample_rate = store.config.audio.sample_rate
 frame_length = store.config.audio.frame_length
 hop_length = store.config.audio.hop_length
+cache_dir = store.config.backend.cache_dir
 
 seperator = Separator("spleeter:5stems")
 
@@ -50,34 +52,62 @@ def split_audio(audio_data: npt.NDArray[np.float32], save_dir: str) -> Dict[str,
 
     return splitted_audio
 
-def calulate_audio_features(audio_tracks: Dict[str, npt.NDArray[np.float32]]):
-    for key, value in audio_tracks.items():
-        rms = librosa.feature.rms(
-            y=make_mono(value),
-            frame_length=frame_length,
-            hop_length=hop_length,
-            center=True,
-        )[0]
 
-        pitches = pitches_over_time(
-            y=make_mono(value),
-            frame_length=frame_length,
-            hop_length=hop_length,
-            sr=sample_rate
-        )
+def calculate_audio_features(audio_tracks: Dict[str, npt.NDArray[np.float32]], folder_name: str):
+    changed = False
+    json_file = os.path.join(cache_dir, folder_name, 'features.json')
+    feature_data = load_json(json_file)
 
-        tempo = tempo_over_time(y=make_mono(value),
-            frame_length=frame_length,
-            hop_length=hop_length,
-            sr=sample_rate)
+    for track_name, value in audio_tracks.items():
+        if track_name not in feature_data:
+            feature_data[track_name] = {}
 
-        onset_strength = librosa.onset.onset_strength(y=make_mono(value),
-                                                      sr=sample_rate,
-                                                      hop_length=hop_length,)
+        if "rms" not in feature_data[track_name]:
+            values = librosa.feature.rms(
+                y=make_mono(value),
+                frame_length=frame_length,
+                hop_length=hop_length,
+                center=True,
+            )[0]
+            feature_data[track_name]["rms"] = normalize_array(values)
+            print('Calculating rms...')
+            changed = True
 
+        if "pitch" not in feature_data[track_name]:
+            values = pitches_over_time(
+                y=make_mono(value),
+                frame_length=frame_length,
+                hop_length=hop_length,
+                sr=sample_rate
+            )
+            feature_data[track_name]["pitch"] = normalize_array(values)
+            print('Calculating pitch...')
+            changed = True
 
+        if "tempo" not in feature_data[track_name]:
+            values = tempo_over_time(y=make_mono(value),
+                frame_length=frame_length,
+                hop_length=hop_length,
+                sr=sample_rate)
+            feature_data[track_name]["tempo"] = normalize_array(values)
+            print('Calculating tempo...')
+            changed = True
 
-    print("Feature calculation done!!!!")
+        if "onset_strength" not in feature_data[track_name]:
+            values = librosa.onset.onset_strength(y=make_mono(value),
+                                                  sr=sample_rate,
+                                                  hop_length=hop_length,)
+            feature_data[track_name]["onset_strength"] = normalize_array(values)
+            print('Calculating onset_strength...')
+            changed = True
+
+    store.features = feature_data
+    if changed:
+        save_dict_as_json(feature_data, json_file)
+
+    print('Done loading/cauclating features...')
+    store.isFeaturesReady = True
+
 
 
 def energy_over_time(y: npt.NDArray[np.float32], frame_length: int=441, hop_length: int=512):
@@ -111,14 +141,14 @@ def energy_over_time(y: npt.NDArray[np.float32], frame_length: int=441, hop_leng
     return np.array(energies)
 
 
-def pitches_over_time(y: npt.NDArray[np.float32], frame_length: int = 441,
+def pitches_over_time(y: npt.NDArray[np.float32], frame_length: int = 2048,
                       hop_length: int = 512, sr: int = 44100):
     chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=hop_length, n_fft=frame_length)
     pitch = np.argmax(chroma, axis=0)
     return pitch
 
 
-def tempo_over_time(y: npt.NDArray[np.float32], frame_length: int = 441,
+def tempo_over_time(y: npt.NDArray[np.float32], frame_length: int = 2048,
                     hop_length: int = 512, sr: int = 44100):
     tempogram = librosa.feature.tempogram(y=y, sr=sr, hop_length=hop_length, win_length=frame_length)
     tempo = np.average(tempogram, axis=0)

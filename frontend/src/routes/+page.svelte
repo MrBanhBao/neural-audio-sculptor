@@ -2,9 +2,11 @@
 	import AudioPlayer from '$lib/components/audioPlayer/AudioPlayer.svelte';
 	import AudioTracker from '$lib/components/audioTracker/AudioTracker.svelte';
 	import ImageRenderer from '$lib/components/imageRenderer/ImageRenderer.svelte';
+	import FeatureTracker from '$lib/components/featureTracker/FeatureTracker.svelte';
 </script>
 
 <AudioPlayer></AudioPlayer>
 <ImageRenderer></ImageRenderer>
 
 <AudioTracker></AudioTracker>
+<FeatureTracker></FeatureTracker>

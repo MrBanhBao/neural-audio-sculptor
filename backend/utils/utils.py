@@ -1,5 +1,9 @@
+import json
 import os
-from typing import List, Union
+from typing import List, Union, Dict
+
+import numpy as np
+from numpy import typing as npt
 
 from data_models import File, Folder
 
@@ -91,3 +95,29 @@ def is_splitted(files: List[str]) -> bool:
         if not os.path.exists(file_name):
             return False
     return True
+
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()  # Convert NumPy arrays to lists
+        return json.JSONEncoder.default(self, obj)
+
+
+def save_dict_as_json(dictionary: Dict, target_file: str):
+    with open(target_file, 'w') as json_file:
+        json.dump(dictionary, json_file, cls=NumpyEncoder)
+
+
+def load_json(file: str) -> Dict:
+    if os.path.exists(file):
+        with open(file, 'r') as json_file:
+            data = json.load(json_file)
+            return data
+    else:
+        data = {}
+        return data
+
+
+def normalize_array(x: npt.NDArray) -> npt.NDArray:
+    return (x-np.min(x))/(np.max(x)-np.min(x))
