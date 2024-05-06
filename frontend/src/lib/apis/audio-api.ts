@@ -111,9 +111,5 @@ export async function setSelectedAudioTrack(selectedAudioTrack: SelectedAudioTra
 export async function getFeaturesFile(path: string) {
     const response = await fetch(`http://${HOST}:${PORT}/api/audio/get/features/?path=${path}`);
 
-    if (!response.ok) {
-        throw new Error(response.statusText)
-    }
-
     return response;
 }
