@@ -101,6 +101,15 @@ def calculate_audio_features(audio_tracks: Dict[str, npt.NDArray[np.float32]], f
             print('Calculating onset...')
             changed = True
 
+        if "energy" not in feature_data[track_name]:
+            values = energy_over_time(y=make_mono(value),
+                                     frame_length=frame_length,
+                                     hop_length=hop_length,
+                                     sr=sample_rate)
+            feature_data[track_name]["energy"] = normalize_array(values)
+            print('Calculating energy...')
+            changed = True
+
     store.features = feature_data
     if changed:
         save_dict_as_json(feature_data, json_file)
