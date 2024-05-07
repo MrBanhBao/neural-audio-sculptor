@@ -78,3 +78,10 @@ type SelectedAudioTrack = {
 	name: string;
 	active: boolean
 }
+
+type FeatureTrackInfo = {
+	id: string;
+	selectedTrack: string;
+	selectedFeature: string;
+	audioData: number[];
+}

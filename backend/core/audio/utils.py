@@ -93,12 +93,12 @@ def calculate_audio_features(audio_tracks: Dict[str, npt.NDArray[np.float32]], f
             print('Calculating tempo...')
             changed = True
 
-        if "onset_strength" not in feature_data[track_name]:
+        if "onset" not in feature_data[track_name]:
             values = librosa.onset.onset_strength(y=make_mono(value),
                                                   sr=sample_rate,
                                                   hop_length=hop_length,)
-            feature_data[track_name]["onset_strength"] = normalize_array(values)
-            print('Calculating onset_strength...')
+            feature_data[track_name]["onset"] = normalize_array(values)
+            print('Calculating onset...')
             changed = True
 
     store.features = feature_data
