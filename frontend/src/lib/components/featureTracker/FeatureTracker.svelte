@@ -36,6 +36,7 @@
 				featureData = await response.json();
 				loading = false;
 				getTrackAndFeatureNames(featureData);
+				updateItems();
 				// Todo: create initial featureTrackItems
 				if (retryTimeout) {
 					clearTimeout(retryTimeout);
@@ -90,6 +91,20 @@
 		featureTrackItems[index] = el;
 	}
 
+	function updateItems() {
+		if (featureTrackItems != null) {
+			const updatedItems = featureTrackItems.map((item) => {
+				const selectedTrack = item.selectedTrack;
+				const selectedFeature = item.selectedFeature;
+				item.audioData = featureData[selectedTrack][selectedFeature];
+
+				return item;
+			});
+			console.log('dasds');
+			featureTrackItems = updatedItems;
+		}
+	}
+
 	// Todo: create TrackNames array, with initial values. {id: , data}
 	// this is going to be used to loop the rows
 	// on change will add data props of featureData
@@ -137,32 +152,3 @@
 		Waiting for loading audio data.
 	{/if}
 </div>
-<!-- <div class="card p-4">
-	<div>
-		<button
-			type="button"
-			class="btn-m variant-filled-primary btn btn-md rounded-full"
-			on:click={addItem}
-		>
-			<span><IconSquarePlus></IconSquarePlus></span>
-			<span>Add Featuretrack</span>
-		</button>
-	</div>
-	<div class="table-container">
-		<table class="table table-interactive">
-			<thead>
-				<tr>
-					<th class="table-cell-fit"></th>
-					<th class="">Track</th>
-					<th class="">Feature</th>
-					<th class="w-9/12">Featureplot</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each featureTrackItems as item (item.id)}
-					<FeatureTrack id={item.id}></FeatureTrack>
-				{/each}
-			</tbody>
-		</table>
-	</div>
-</div> -->
