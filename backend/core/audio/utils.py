@@ -104,8 +104,7 @@ def calculate_audio_features(audio_tracks: Dict[str, npt.NDArray[np.float32]], f
         if "energy" not in feature_data[track_name]:
             values = energy_over_time(y=make_mono(value),
                                      frame_length=frame_length,
-                                     hop_length=hop_length,
-                                     sr=sample_rate)
+                                     hop_length=hop_length)
             feature_data[track_name]["energy"] = normalize_array(values)
             print('Calculating energy...')
             changed = True
