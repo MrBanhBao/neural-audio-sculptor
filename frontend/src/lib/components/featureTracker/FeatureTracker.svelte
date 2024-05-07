@@ -18,7 +18,13 @@
 	let trackNames: string[];
 	let featureNames: string[];
 
-	let featureTrackItems: FeatureTrackInfo[] = [];
+	let featureTrackItems: FeatureTrackInfo[] | null = null;
+
+	audioMetaData.subscribe(() => {
+		retryCount = 0;
+		featureData = null;
+		fetchAudioFeatures();
+	});
 
 	async function fetchAudioFeatures() {
 		if ($audioMetaData.file_name != undefined) {
@@ -36,6 +42,7 @@
 				featureData = await response.json();
 				loading = false;
 				getTrackAndFeatureNames(featureData);
+				initFeatureTrackItems();
 				updateItems();
 				// Todo: create initial featureTrackItems
 				if (retryTimeout) {
@@ -59,11 +66,62 @@
 		featureNames = Object.keys(featureData[trackNames[0]]);
 	}
 
-	audioMetaData.subscribe(() => {
-		retryCount = 0;
-		featureData = null;
-		fetchAudioFeatures();
-	});
+	function initFeatureTrackItems() {
+		console.log(featureTrackItems);
+		if (featureTrackItems == null) {
+			console.log('kikikiki');
+			const data1 = {
+				id: 'i' + uuidv4(),
+				selectedTrack: 'main',
+				selectedFeature: 'rms'
+			} as FeatureTrackInfo;
+
+			const data2 = {
+				id: 'i' + uuidv4(),
+				selectedTrack: 'vocals',
+				selectedFeature: 'pitch'
+			} as FeatureTrackInfo;
+
+			const data3 = {
+				id: 'i' + uuidv4(),
+				selectedTrack: 'drums',
+				selectedFeature: 'energy'
+			} as FeatureTrackInfo;
+
+			const data4 = {
+				id: 'i' + uuidv4(),
+				selectedTrack: 'bass',
+				selectedFeature: 'tempo'
+			} as FeatureTrackInfo;
+
+			const data5 = {
+				id: 'i' + uuidv4(),
+				selectedTrack: 'piano',
+				selectedFeature: 'pitch'
+			} as FeatureTrackInfo;
+
+			const data6 = {
+				id: 'i' + uuidv4(),
+				selectedTrack: 'other',
+				selectedFeature: 'rms'
+			} as FeatureTrackInfo;
+			featureTrackItems = [data1, data2, data3, data4, data5, data6];
+		}
+	}
+
+	function updateItems() {
+		if (featureTrackItems != null) {
+			const updatedItems = featureTrackItems.map((item) => {
+				const selectedTrack = item.selectedTrack;
+				const selectedFeature = item.selectedFeature;
+				item.audioData = featureData[selectedTrack][selectedFeature];
+
+				return item;
+			});
+			console.log('dasds');
+			featureTrackItems = updatedItems;
+		}
+	}
 
 	function addItem() {
 		const newItem = {
@@ -89,20 +147,6 @@
 		el.audioData = featureData[info.selectedTrack][info.selectedFeature];
 
 		featureTrackItems[index] = el;
-	}
-
-	function updateItems() {
-		if (featureTrackItems != null) {
-			const updatedItems = featureTrackItems.map((item) => {
-				const selectedTrack = item.selectedTrack;
-				const selectedFeature = item.selectedFeature;
-				item.audioData = featureData[selectedTrack][selectedFeature];
-
-				return item;
-			});
-			console.log('dasds');
-			featureTrackItems = updatedItems;
-		}
 	}
 
 	// Todo: create TrackNames array, with initial values. {id: , data}

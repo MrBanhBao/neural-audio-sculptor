@@ -83,5 +83,5 @@ type FeatureTrackInfo = {
 	id: string;
 	selectedTrack: string;
 	selectedFeature: string;
-	audioData: number[];
+	audioData: number[] | null;
 }
