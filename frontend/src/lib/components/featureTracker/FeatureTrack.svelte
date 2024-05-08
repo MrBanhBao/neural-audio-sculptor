@@ -1,23 +1,37 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { currentFrame, config } from '$lib/stores/store';
 	import { createEventDispatcher } from 'svelte';
 	import { IconSquareX } from '@tabler/icons-svelte';
+	import { setCurrentFrame } from '$lib/apis/audio-api';
 	import WaveSurfer from 'wavesurfer.js';
 
 	export let id: string = 'test';
+	export let height: number = 60;
 	export let trackNames: string[] = ['main', 'vocals', 'drums', 'bass', 'piano', 'other'];
 	export let featureNames: string[] = ['rme', 'energy', 'pitch'];
 	export let audioData: number[] = [0];
-	export let duration: number = 1;
-
-	const dispatch = createEventDispatcher();
-
 	export let selectedTrack: string;
 	export let selectedFeature: string;
+
+	const dispatch = createEventDispatcher();
+	const hopLength: number = $config.audio.hop_length;
 	let wavesurfer: any;
 
 	$: {
 		updateWavePlot(audioData);
+	}
+
+	$: time = Math.ceil($currentFrame / hopLength);
+
+	$: {
+		updateTime(time);
+	}
+
+	function updateTime(time: number) {
+		if (wavesurfer) {
+			wavesurfer.setTime(time);
+		}
 	}
 
 	onMount(() => {
@@ -29,14 +43,22 @@
 			container: '#' + id + '-waveform',
 			waveColor: 'violet',
 			progressColor: 'purple',
-			height: 60,
-			interact: false,
+			height: height,
+			interact: true,
 			peaks: [audioData],
-			duration: duration
+			duration: audioData.length,
+			sampleRate: 1,
+			barAlign: 'bottom',
+			dragToSeek: true
 		});
 
 		wavesurfer.on('ready', () => {
-			wavesurfer.setTime(0);
+			wavesurfer.setTime(time);
+		});
+
+		wavesurfer.on('interaction', async (newTime) => {
+			let frame = Math.ceil(newTime * hopLength);
+			const response = await setCurrentFrame({ value: frame } as NumberValue);
 		});
 
 		return () => {
@@ -54,14 +76,22 @@
 				container: '#' + id + '-waveform',
 				waveColor: 'violet',
 				progressColor: 'purple',
-				height: 60,
-				interact: false,
+				height: height,
+				interact: true,
 				peaks: [audioData],
-				duration: duration
+				duration: audioData.length,
+				sampleRate: 1,
+				dragToSeek: true,
+				barAlign: 'bottom'
 			});
 
 			wavesurfer.on('ready', () => {
-				wavesurfer.setTime(0);
+				wavesurfer.setTime(time);
+			});
+
+			wavesurfer.on('interaction', async (newTime) => {
+				let frame = Math.ceil(newTime * hopLength);
+				const response = await setCurrentFrame({ value: frame } as NumberValue);
 			});
 		}
 	}

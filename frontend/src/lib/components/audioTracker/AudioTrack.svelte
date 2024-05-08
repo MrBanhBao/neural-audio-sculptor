@@ -6,10 +6,10 @@
 	import { getAudioFile, setSelectedAudioTrack, setCurrentFrame } from '$lib/apis/audio-api';
 
 	export let name: string;
+	export let height: number = 60;
 	export let active: boolean = false;
 	export let url: string = '';
 	export let sampleRate: number = 44100;
-	import { fade } from 'svelte/transition';
 
 	let wavesurfer: any;
 
@@ -24,7 +24,7 @@
 			progressColor: 'purple',
 			interact: false,
 			peaks: [[0]],
-			height: 60,
+			height: height,
 			duration: 1,
 			dragToSeek: true
 		});
