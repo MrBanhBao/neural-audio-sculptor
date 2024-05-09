@@ -154,45 +154,43 @@
 	// on change will add data props of featureData
 </script>
 
-<div class="card p-4">
-	{#if loading}
-		<ProgressRadial />
-	{:else if featureData != null}
-		<div class="table-container">
-			<table class="table table-interactive">
-				<thead>
-					<tr>
-						<th class="table-cell-fit"
-							><button
-								type="button"
-								class="btn-s variant-filled-primary btn rounded-full"
-								on:click={addItem}
-							>
-								<span><IconSquarePlus></IconSquarePlus></span>
-							</button></th
+{#if loading}
+	<ProgressRadial />
+{:else if featureData != null}
+	<div class="table-container max-h-full">
+		<table class="table table-interactive">
+			<thead>
+				<tr>
+					<th class="table-cell-fit"
+						><button
+							type="button"
+							class="btn-s variant-filled-primary btn rounded-full"
+							on:click={addItem}
 						>
-						<th class="">Track</th>
-						<th class="">Feature</th>
-						<th class="w-9/12">Featureplot</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each featureTrackItems as item (item.id)}
-						<FeatureTrack
-							id={item.id}
-							{trackNames}
-							{featureNames}
-							selectedTrack={item.selectedTrack}
-							selectedFeature={item.selectedFeature}
-							audioData={item.audioData}
-							on:removeFeature={removeItem}
-							on:dropdownChange={updateItem}
-						></FeatureTrack>
-					{/each}
-				</tbody>
-			</table>
-		</div>
-	{:else}
-		Waiting for loading audio data.
-	{/if}
-</div>
+							<span><IconSquarePlus></IconSquarePlus></span>
+						</button></th
+					>
+					<th class="">Track</th>
+					<th class="">Feature</th>
+					<th class="w-9/12">Featureplot</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each featureTrackItems as item (item.id)}
+					<FeatureTrack
+						id={item.id}
+						{trackNames}
+						{featureNames}
+						selectedTrack={item.selectedTrack}
+						selectedFeature={item.selectedFeature}
+						audioData={item.audioData}
+						on:removeFeature={removeItem}
+						on:dropdownChange={updateItem}
+					></FeatureTrack>
+				{/each}
+			</tbody>
+		</table>
+	</div>
+{:else}
+	Waiting for loading audio data.
+{/if}

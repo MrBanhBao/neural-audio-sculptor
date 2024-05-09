@@ -18,7 +18,7 @@
 	});
 </script>
 
-<header class="card-header flex items-center">
+<header class="card-header flex flex-col items-start">
 	<button
 		type="button"
 		class="btn-m variant-filled-primary btn btn-md rounded-full"
@@ -27,7 +27,7 @@
 		<span><IconPlaylist stroke="2" /></span>
 		<span>Load Music</span>
 	</button>
-	<span class="pl-4">File: {fileName}</span>
+	<span class="mt-4">File: {fileName}</span>
 </header>
 
 <Modal bind:showModal title="Music Finder">

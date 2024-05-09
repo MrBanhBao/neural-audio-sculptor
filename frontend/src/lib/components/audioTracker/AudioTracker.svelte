@@ -37,7 +37,7 @@
 	}
 </script>
 
-<div class="card p-4">
+<div class="card min-w-80 flex-grow">
 	<div class="table-container">
 		<table class="table table-interactive">
 			<thead>

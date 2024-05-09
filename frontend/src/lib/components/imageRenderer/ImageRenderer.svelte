@@ -63,5 +63,3 @@
 		>
 	</div>
 </div>
-
-<buttton type="button" class="variant-filled btn-icon" on:click={test}>asddsad</buttton>

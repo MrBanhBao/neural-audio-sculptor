@@ -17,6 +17,16 @@
 		initWavePlot();
 	});
 
+	$: time = Math.ceil($currentFrame / sampleRate);
+
+	$: {
+		updateTime(time);
+	}
+
+	$: {
+		updateWavePlot(url);
+	}
+
 	function initWavePlot() {
 		wavesurfer = WaveSurfer.create({
 			container: '#' + name + '-waveform',
@@ -30,7 +40,7 @@
 		});
 
 		wavesurfer.on('ready', () => {
-			wavesurfer.setTime(0);
+			wavesurfer.setTime(time);
 		});
 
 		return () => {
@@ -38,16 +48,6 @@
 				wavesurfer.destroy();
 			}
 		};
-	}
-
-	$: time = Math.ceil($currentFrame / sampleRate);
-
-	$: {
-		updateTime(time);
-	}
-
-	$: {
-		updateWavePlot(url);
 	}
 
 	function updateTime(time: number) {
@@ -66,7 +66,7 @@
 			wavesurfer.toggleInteraction(true);
 
 			wavesurfer.on('ready', () => {
-				wavesurfer.setTime(0);
+				wavesurfer.setTime(time);
 			});
 
 			wavesurfer.on('interaction', async (newTime) => {
