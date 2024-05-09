@@ -158,7 +158,7 @@
 	<ProgressRadial />
 {:else if featureData != null}
 	<div class="table-container max-h-full">
-		<table class="table table-interactive">
+		<table class="table table-interactive table-auto">
 			<thead>
 				<tr>
 					<th class="table-cell-fit"
@@ -170,9 +170,9 @@
 							<span><IconSquarePlus></IconSquarePlus></span>
 						</button></th
 					>
-					<th class="">Track</th>
-					<th class="">Feature</th>
-					<th class="w-9/12">Featureplot</th>
+					<th class="w-40">Track</th>
+					<th class="w-40">Feature</th>
+					<th class="">Featureplot</th>
 				</tr>
 			</thead>
 			<tbody>
