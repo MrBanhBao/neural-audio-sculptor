@@ -11,17 +11,17 @@
 	<TabGroup>
 		<Tab bind:group={tabSet} name="tab1" value={0}>
 			<div class="flex items-center">
-				<IconWaveSawTool /><span class="ml-1">Audio</span>
+				<IconWaveSawTool /><span class="ml-1 font-bold">Audio</span>
 			</div>
 		</Tab>
 		<Tab bind:group={tabSet} name="tab2" value={1}>
 			<div class="flex items-center">
-				<IconTimeline /><span class="ml-1">Features</span>
+				<IconTimeline /><span class="ml-1 font-bold">Features</span>
 			</div>
 		</Tab>
 		<Tab bind:group={tabSet} name="tab3" value={2}>
 			<div class="flex items-center">
-				<IconRun /><span class="ml-1">Movement</span>
+				<IconRun /><span class="ml-1 font-bold">Movement</span>
 			</div>
 		</Tab>
 		<!-- Tab Panels --->

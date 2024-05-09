@@ -155,7 +155,12 @@
 </script>
 
 {#if loading}
-	<ProgressRadial />
+	<div class="flex justify-around">
+		<div class="flex flex-col">
+			<ProgressRadial />
+			<span>Loading Data...</span>
+		</div>
+	</div>
 {:else if featureData != null}
 	<div class="table-container max-h-full">
 		<table class="table table-interactive table-auto">
@@ -192,5 +197,12 @@
 		</table>
 	</div>
 {:else}
-	Waiting for loading audio data.
+	<p class="text-bold centered text-xl">Waiting for loading audio data...</p>
 {/if}
+
+<style>
+	.centered {
+		text-align: center;
+		vertical-align: middle;
+	}
+</style>
