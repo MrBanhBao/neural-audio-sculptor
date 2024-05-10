@@ -109,7 +109,7 @@ def calculate_audio_features(audio_tracks: Dict[str, npt.NDArray[np.float32]], f
             print('Calculating energy...')
             changed = True
 
-    store.features = feature_data
+    store.audio_features = feature_data
     if changed:
         save_dict_as_json(feature_data, json_file)
 

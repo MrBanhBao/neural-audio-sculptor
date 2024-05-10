@@ -67,9 +67,7 @@
 	}
 
 	function initFeatureTrackItems() {
-		console.log(featureTrackItems);
 		if (featureTrackItems == null) {
-			console.log('kikikiki');
 			const data1 = {
 				id: 'i' + uuidv4(),
 				selectedTrack: 'main',
@@ -118,7 +116,6 @@
 
 				return item;
 			});
-			console.log('dasds');
 			featureTrackItems = updatedItems;
 		}
 	}

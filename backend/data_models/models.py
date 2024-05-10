@@ -5,6 +5,8 @@ import torch
 import yaml
 from pydantic import BaseModel
 
+from core.generators.utils import create_direction_vector
+
 
 class BackendConfig(BaseModel):
     """
@@ -90,7 +92,7 @@ class Config(BaseModel):
 
         if backend.device is None:
             backend.device = torch.device(
-                "cuda:0" if (torch.cuda.is_available()) else "cpu"
+                "cuda" if (torch.cuda.is_available()) else "cpu"
             )
         return cls(backend=backend, frontend=frontend, audio=audio)
 
@@ -175,10 +177,11 @@ class StyleGanStore(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-    z: Union[torch.Tensor, None] = None
-    direction_z: Union[torch.Tensor, None] = None
-    ws: Union[torch.Tensor, None] = None
-    direction_ws: Union[torch.Tensor, None] = None
+    z_start: Union[torch.Tensor, None] = None
+    z_target: Union[torch.Tensor, None] = None
+    z_interpolate: Union[torch.Tensor, None] = None
+    z_direction: Union[torch.Tensor, None] = None
+    ws_direction: Union[torch.Tensor, None] = None
 
     @classmethod
     def random_init(cls, z_dim: int, num_ws: int, device=None):
@@ -186,22 +189,30 @@ class StyleGanStore(BaseModel):
         Creates a StyleGanStore with random initialized values.
 
         Parameters:
-            z_dim (int): Dimension ot th latent vector z (specified by model)
-            num_ws (int): Number of style vector ws (specified by model)
-            device (str): Device (cpu, cuda) where tensors are stored.
+            z_dim (int): Dimension ot th latent vector z (specified by generator model)
+            num_ws (int): Number of style vector ws (specified by generator model)
+            device (str): Device (cpu, cuda) where tensors are going to be stored.
 
         Returns:
             StyleGanStore
         """
-        z = torch.randn([1, z_dim]).to(device)
-        direction_z = torch.from_numpy(np.random.choice([-1, 1], size=[1, z_dim])).to(
-            device
-        )
-        ws = torch.randn([1, num_ws, z_dim]).to(device)
-        direction_ws = torch.from_numpy(
+        if device is None:
+            device = torch.device("cuda" if (torch.cuda.is_available()) else "cpu")
+
+        z_start = torch.randn([1, z_dim]).to(device)
+        z_target = torch.randn([1, z_dim]).to(device)
+        z_direction = create_direction_vector(z_start, z_target).to(device)
+
+        ws_direction = torch.from_numpy(
             np.random.choice([-1, 1], size=[1, num_ws, z_dim])
         ).to(device)
-        return cls(z=z, direction_z=direction_z, ws=ws, direction_ws=direction_ws)
+        return cls(
+            z_start=z_start,
+            z_target=z_target,
+            z_interpolate=z_start,
+            z_direction=z_direction,
+            ws_direction=ws_direction,
+        )
 
 
 class AudioMetaData(BaseModel):
@@ -235,3 +246,23 @@ class PlaybackState(BaseModel):
 class SelectedAudioTrack(BaseModel):
     name: str
     active: bool
+
+
+class FeatureMapInfos(BaseModel):
+    id: str
+    active: bool
+    track_name: str
+    feature_name: str
+    factor: float
+
+    @classmethod
+    def init(
+        cls, id: str, active: bool, track_name: str, feature_name: str, factor: float
+    ):
+        return cls(
+            id=id,
+            active=active,
+            track_name=track_name,
+            feature_name=feature_name,
+            factor=factor,
+        )

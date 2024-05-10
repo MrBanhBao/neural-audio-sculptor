@@ -50,10 +50,10 @@
 	}
 </script>
 
-<div class="card p-4">
+<div class="card min-w-[400px] max-w-[400px] p-4">
 	<span> Information </span>
 	<div class="mb-2">
-		<img width="256" src={imgSrc} alt="generated for music viz." />
+		<img width="360" src={imgSrc} alt="generated for music viz." />
 	</div>
 	<div>
 		<button type="button" class="variant-filled btn-icon"><IconMultiplier1x /></button>

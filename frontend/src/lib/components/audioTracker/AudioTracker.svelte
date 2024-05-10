@@ -8,7 +8,6 @@
 	let tracks: WaveSurferTrack[];
 
 	function createWaveSurferTrackArray(audioMetaData) {
-		console.log('load meta trackers');
 		if (audioMetaData.file_name != undefined) {
 			tracks = trackNames.map((trackName) => createWaveSurferTrackInfo(trackName));
 			console.log(tracks);
