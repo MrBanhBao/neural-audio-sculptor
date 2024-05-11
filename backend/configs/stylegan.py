@@ -9,14 +9,14 @@ speed_feature_maps_infos: List[FeatureMapInfos] = [
             active=True,
             track_name="vocals",
             feature_name="energy",
-            factor=1,
+            factor=1.5,
         ),
         FeatureMapInfos.init(
             id=str(uuid.uuid4()),
             active=True,
             track_name="drums",
             feature_name="onset",
-            factor=1,
+            factor=2.5,
         ),
         FeatureMapInfos.init(
             id=str(uuid.uuid4()),

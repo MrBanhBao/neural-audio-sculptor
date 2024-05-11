@@ -63,6 +63,10 @@ type PlaybackState = {
 	mute: boolean;
 }
 
+interface SelectedAudioTracks {
+	[key: string]: boolean;
+}
+
 type StatusFeedback = {
 	status: "pending" | "successfull" | "failed" | "idle";
 	message: string;

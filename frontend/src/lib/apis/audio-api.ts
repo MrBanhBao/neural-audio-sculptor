@@ -102,6 +102,15 @@ export async function getAudioFile(path: string) {
     return response;
 }
 
+export async function getSelectedAudioTracks() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/audio/get/player/selected-audio-tracks`);
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
 export async function setSelectedAudioTrack(selectedAudioTrack: SelectedAudioTrack) {
     const response = await fetch(`http://${HOST}:${PORT}/api/audio/set/player/selected-audio-track`, {
         method: 'POST',

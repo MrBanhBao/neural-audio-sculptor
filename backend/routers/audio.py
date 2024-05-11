@@ -34,19 +34,21 @@ def load_audio(audio_path: StringValue, background_tasks: BackgroundTasks) -> Au
     print(f"Loading Audio: {audio_path}...")
     store.isFeaturesReady = False
 
+    audio_data_tracks = {}
     audio_data, audio_meta_data = audio_loader.load_audio(audio_path.value)
-
+    audio_data_tracks["main"] = audio_data
     folder_name = os.path.splitext(audio_meta_data.file_name)[0]
     directory = os.path.join(cache_dir, folder_name)
 
     files = [os.path.join(directory, f"{track}.wav") for track in track_names]
     if not is_splitted(files):
         create_directory(directory)
-        audio_data_tracks = split_audio(audio_data=audio_data, save_dir=directory)
+        splitted_audio_data_tracks = split_audio(audio_data=audio_data, save_dir=directory)
     else:
         print(f'Found splitted audio data for {folder_name}.')
-        audio_data_tracks = load_audio_data_tracks(directory, track_names)
-    audio_data_tracks["main"] = audio_data
+        splitted_audio_data_tracks = load_audio_data_tracks(directory, track_names)
+
+    audio_data_tracks.update(splitted_audio_data_tracks)
 
     # calculate in background
     background_tasks.add_task(calculate_audio_features, audio_data_tracks, folder_name)
@@ -63,6 +65,7 @@ def load_audio_data_tracks(directory: str, track_names: List[str]):
         audio, _ = audio_loader.load_audio(file)
         audio_data_tracks[track_name] = audio
     return audio_data_tracks
+
 
 @router.post("/load/cover")
 def load_audio(audio_path: StringValue) -> Response:
@@ -102,7 +105,6 @@ def set_audio_volume(volume: FloatValue):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
 @router.get("/get/player/current-frame")
 def get_current_frame() -> JSONResponse:
     try:
@@ -124,6 +126,14 @@ def get_audio(path: str):
     return FileResponse(path)
 
 
+@router.get("/get/player/selected-audio-tracks")
+def set_current_frame() -> JSONResponse:
+    try:
+        return audio_player.selected_audio_tracks
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/set/player/selected-audio-track")
 def set_current_frame(data: SelectedAudioTrack):
     try:
@@ -134,6 +144,7 @@ def set_current_frame(data: SelectedAudioTrack):
             return JSONResponse(status_code=500, content=f"Failed set {data.name} to {data.active}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/get/features")
 def get_features(path: str):
