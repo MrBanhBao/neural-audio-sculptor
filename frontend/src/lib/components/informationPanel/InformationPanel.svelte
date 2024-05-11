@@ -27,14 +27,20 @@
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
 			<div class="overflow-auto">
-				{#if tabSet === 0}
+				<div class:hidden={!(tabSet === 0)}>
 					<AudioTracker></AudioTracker>
-				{:else if tabSet === 1}
+				</div>
+				<div class:hidden={!(tabSet === 1)}>
 					<FeatureTracker></FeatureTracker>
-				{:else if tabSet === 2}
-					Future Content
-				{/if}
+				</div>
+				<div class:hidden={!(tabSet === 2)}>Future Content</div>
 			</div>
 		</svelte:fragment>
 	</TabGroup>
 </div>
+
+<style>
+	.hidden {
+		visibility: hidden;
+	}
+</style>
