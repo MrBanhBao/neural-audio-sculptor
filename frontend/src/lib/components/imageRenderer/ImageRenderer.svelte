@@ -1,13 +1,58 @@
 <script lang="ts">
+	import { wsRoutineUrl } from '$lib/apis/audio-api';
+	import { onMount, onDestroy } from 'svelte';
 	import { IconMultiplier1x, IconMultiplier2x, IconWindowMaximize } from '@tabler/icons-svelte';
 
-	let imgSrc = 'https://fakeimg.pl/512x512';
-	const imgs = [
-		'https://fastly.picsum.photos/id/559/200/300.jpg?hmac=lNV_-XwwjsYJn2cX4Pq7EFx4GA57ekwh_ZoR1dc09H0',
-		'https://fastly.picsum.photos/id/360/200/200.jpg?hmac=uO4zEvFVrZ6_pBuLc0DuGdgwe5g3FiJCd7bGsr2lhCo',
-		'https://fastly.picsum.photos/id/727/200/200.jpg?hmac=3t3XFTDKvF4DdvtTj-t8IMm5uwdlyzdECQmn87m3qk0'
-	];
+	let ws: WebSocket;
+	let isConnected = false;
 	let winRef: Window | null = null;
+	let imgSrc: string = '/images/img-placeholder.jpg';
+
+	function connectWebSocket() {
+		ws = new WebSocket(wsRoutineUrl);
+
+		ws.binaryType = 'arraybuffer'; // Specify that binary data will be received as ArrayBuffer
+
+		ws.onopen = (event) => {
+			console.log('WebSocket connection opened:', event);
+			isConnected = true;
+		};
+
+		ws.onmessage = (event) => {
+			const arrayBuffer = event.data;
+			const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+			const objectURL: string = URL.createObjectURL(blob);
+			imgSrc = objectURL;
+		};
+
+		ws.onclose = (event) => {
+			console.log('WebSocket connection closed:', event);
+		};
+
+		ws.onerror = (event) => {
+			console.error('WebSocket error:', event);
+		};
+	}
+
+	function reconnectWebSocket() {
+		if (!isConnected) {
+			console.log('Reconnecting WebSocket...');
+			connectWebSocket();
+		}
+	}
+
+	function disconnectWebSocket() {
+		ws?.close();
+	}
+
+	onMount(() => {
+		connectWebSocket();
+	});
+
+	onDestroy(() => {
+		isConnected = false;
+		disconnectWebSocket();
+	});
 
 	function openImage() {
 		const features = 'width=512,height=512';
@@ -32,11 +77,6 @@
                 <img id="image" src=${imgSrc} alt="Image" style="width: auto; height: 100%;">
             </div>`;
 		winRef?.document.write(content);
-	}
-
-	function test() {
-		const randomIndex = Math.floor(Math.random() * imgs.length);
-		imgSrc = imgs[randomIndex];
 	}
 
 	function updateImage(newImg: string) {

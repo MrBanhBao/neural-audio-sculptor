@@ -3,15 +3,22 @@ import pickle
 import sys
 from typing import Union, Dict, List
 
+import numpy as np
 import torch
 
 import utils.store as store
 from configs.stylegan import speed_feature_maps_infos, ws_feature_maps_infos, ws_name_indices_mapping
-from core.generators.helpers import init_feature_map_info_dict
+from core.generators.utils import has_passed, create_direction_vector
 from data_models import FeatureMapInfos, StyleGanStore
 
 sys.path.insert(0, os.path.abspath("../backend/libs/stylegan2-ada-pytorch"))
 
+def init_feature_map_info_dict(feature_infos: List[FeatureMapInfos]) -> Dict[str, FeatureMapInfos]:
+    feature_maps_info = {}
+    for info in feature_infos:
+        feature_maps_info[info.id] = info
+
+    return feature_maps_info
 
 class StyleGan2Ada:
     def __init__(self, model_file: str, device: str = None) -> None:
@@ -62,42 +69,56 @@ class StyleGan2Ada:
 
     def routine(self, index: int, label: Union[int, None] = None, truncation_psi: float = 1.2, noise_mode="const"):
         speed = self._calculate_speed_value(index=index)
-        z: torch.Tensor = self.store.z_interpolate
+        z_interpolate: torch.Tensor = self.store.z_interpolate
         z_direction: torch.Tensor = self.store.z_direction
+        z_target: torch.Tensor = self.store.z_target
 
-        z = z + (z_direction * speed)
-        self.store.z_direction = z
+        z_interpolate = z_interpolate + (z_direction * speed)
 
         with torch.no_grad():
-            ws: torch.Tensor = self.calculate_ws(z=z, label=label, truncation_psi=truncation_psi)
+            ws: torch.Tensor = self.calculate_ws(z=z_interpolate, label=label, truncation_psi=truncation_psi)
             ws = self._modify_ws(index, ws)
 
             img = self.calculate_image(ws, noise_mode=noise_mode)
+
+        # change target when it was reached
+        if has_passed(z_interpolate, z_target, z_direction):
+            self.store.z_start = z_target
+            self.store.z_target = torch.randn([1, self.z_dim]).to(self.device)
+            self.store.z_direction = create_direction_vector(self.store.z_start, self.store.z_target)
+            self.store.ws_direction = torch.from_numpy(np.random.choice([-1, 1], size=[1, self.num_ws, self.z_dim])).to(self.device)
+
+
+        # TODO: add transformations
+
+        # Update store
+        self.store.z_interpolate = z_interpolate
 
         return img[0].cpu().numpy()
 
     def _calculate_speed_value(self, index: int) -> float:
         value = 0
-        for featureMapInfo in self.speed_feature_dict.values():
-            if featureMapInfo.active:
-                track_name = featureMapInfo.track_name
-                feature_name = featureMapInfo.feature_name
-                factor = featureMapInfo.factor
+        if store.audio_features:
+            for featureMapInfo in self.speed_feature_dict.values():
+                if featureMapInfo.active:
+                    track_name = featureMapInfo.track_name
+                    feature_name = featureMapInfo.feature_name
+                    factor = featureMapInfo.factor
 
-                feature_value = store.audio_features[track_name][feature_name][index]
-                value = value + (feature_value*factor)
-
+                    feature_value = store.audio_features[track_name][feature_name][index]
+                    value = value + (feature_value*factor)
         return value
 
     def _modify_ws(self, index: int,  ws: torch.Tensor) -> torch.Tensor:
-        for featureMapInfo in self.ws_feature_dict.values():
-            feature_info_id: str = featureMapInfo.id
-            track_name: str = featureMapInfo.track_name
-            feature_name: str = featureMapInfo.feature_name
-            factor: float = featureMapInfo.factor
+        if store.audio_features:
+            for featureMapInfo in self.ws_feature_dict.values():
+                feature_info_id: str = featureMapInfo.id
+                track_name: str = featureMapInfo.track_name
+                feature_name: str = featureMapInfo.feature_name
+                factor: float = featureMapInfo.factor
 
-            ws_indices: List[int] = ws_name_indices_mapping[feature_info_id]
-            feature_value: float = store.audio_features[track_name][feature_name][index]
+                ws_indices: List[int] = ws_name_indices_mapping[feature_info_id]
+                feature_value: float = store.audio_features[track_name][feature_name][index]
 
-            ws[:, ws_indices] = ws[:, ws_indices] + (self.store.ws_direction[:, ws_indices] * feature_value * factor)
+                ws[:, ws_indices] = ws[:, ws_indices] + (self.store.ws_direction[:, ws_indices] * feature_value * factor)
         return ws

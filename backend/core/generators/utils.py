@@ -1,7 +1,7 @@
 import torch
 
 
-def create_direction_vector(a: torch.Tensor, b: torch.Tensor):
+def create_direction_vector(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
     """
     Checks if vector 'a' has passed vector 'b' using the dot product method.
 
@@ -18,7 +18,7 @@ def create_direction_vector(a: torch.Tensor, b: torch.Tensor):
     return d / torch.norm(d)
 
 
-def has_passed(a: torch.Tensor, b: torch.Tensor, d: torch.Tensor):
+def has_passed(a: torch.Tensor, b: torch.Tensor, d: torch.Tensor) -> bool:
     """
     Checks if vector 'a' has passed vector 'b' using the dot product method.
 

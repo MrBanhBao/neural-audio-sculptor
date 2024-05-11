@@ -1,5 +1,9 @@
-let HOST: string | unknown = '127.0.0.1';
-let PORT: number | unknown = 8000;
+const HOST: string | unknown = '127.0.0.1';
+const PORT: number | unknown = 8000;
+
+const webSocketUrl = `ws://${HOST}:${PORT}`
+
+export const wsRoutineUrl = `${webSocketUrl}/api/stylegan/ws/routine`
 
 export async function loadAudioFile(path: StringValue) {
     const response = await fetch(`http://${HOST}:${PORT}/api/audio/load/file`, {

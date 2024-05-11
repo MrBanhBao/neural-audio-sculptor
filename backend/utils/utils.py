@@ -1,8 +1,11 @@
+import io
 import json
 import os
 from typing import List, Union, Dict
 
 import numpy as np
+import torch
+from PIL import Image
 from numpy import typing as npt
 
 from data_models import File, Folder
@@ -121,3 +124,11 @@ def load_json(file: str) -> Dict:
 
 def normalize_array(x: npt.NDArray) -> npt.NDArray:
     return (x-np.min(x))/(np.max(x)-np.min(x))
+
+
+def img_array_to_image_byte_pil(img_array: torch.Tensor, format: str = "JPEG") -> bytes:
+    img = Image.fromarray(img_array)
+    with io.BytesIO() as buf:
+        img.save(buf, format=format)
+        img_bytes = buf.getvalue()
+        return img_bytes
