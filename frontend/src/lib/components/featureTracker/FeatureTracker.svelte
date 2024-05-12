@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { IconSquareX, IconSquarePlus } from '@tabler/icons-svelte';
-	import { audioMetaData, currentFrame, isPlaying, config } from '$lib/stores/store';
+	import { audioMetaData, config } from '$lib/stores/store';
 	import { v4 as uuidv4 } from 'uuid';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { getFeaturesFile } from '$lib/apis/audio-api';

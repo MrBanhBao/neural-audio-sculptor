@@ -9,11 +9,11 @@ import torch
 import utils.store as store
 from configs.stylegan import speed_feature_maps_infos, ws_feature_maps_infos, ws_name_indices_mapping
 from core.generators.utils import has_passed, create_direction_vector
-from data_models import FeatureMapInfos, StyleGanStore
+from data_models import FeatureMapInfo, StyleGanStore
 
 sys.path.insert(0, os.path.abspath("../backend/libs/stylegan2-ada-pytorch"))
 
-def init_feature_map_info_dict(feature_infos: List[FeatureMapInfos]) -> Dict[str, FeatureMapInfos]:
+def init_feature_map_info_dict(feature_infos: List[FeatureMapInfo]) -> Dict[str, FeatureMapInfo]:
     feature_maps_info = {}
     for info in feature_infos:
         feature_maps_info[info.id] = info
@@ -27,8 +27,8 @@ class StyleGan2Ada:
         self.num_ws: Union[int, None] = None
         self.device: Union[str, None] = None
         self.store: Union[StyleGanStore, None] = None
-        self.speed_feature_dict: Dict[str, FeatureMapInfos] = init_feature_map_info_dict(speed_feature_maps_infos)
-        self.ws_feature_dict: Dict[str, FeatureMapInfos] = init_feature_map_info_dict(ws_feature_maps_infos)
+        self.speed_feature_dict: Dict[str, FeatureMapInfo] = init_feature_map_info_dict(speed_feature_maps_infos)
+        self.ws_feature_dict: Dict[str, FeatureMapInfo] = init_feature_map_info_dict(ws_feature_maps_infos)
         self.load_model(model_file, device)
 
     def load_model(self, model_file: str, device: Union[str, None] = None):
@@ -122,3 +122,45 @@ class StyleGan2Ada:
 
                 ws[:, ws_indices] = ws[:, ws_indices] + (self.store.ws_direction[:, ws_indices] * feature_value * factor)
         return ws
+
+    def get_speed_feature_infos(self) -> List[FeatureMapInfo]:
+        return list(self.speed_feature_dict.values())
+
+    def modify_speed_feature_dict(self, featureMapInfo: FeatureMapInfo) -> bool:
+        try:
+            feat_id = featureMapInfo.id
+            self.speed_feature_dict[feat_id] = featureMapInfo
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def delete_speed_feature_dict(self, featureMapInfo: FeatureMapInfo) -> bool:
+        try:
+            feat_id = featureMapInfo.id
+            del self.speed_feature_dict[feat_id]
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def get_ws_feature_infos(self) -> List[FeatureMapInfo]:
+        return list(self.ws_feature_dict.values())
+
+    def modify_ws_feature_dict(self, featureMapInfo: FeatureMapInfo):
+        try:
+            feat_id = featureMapInfo.id
+            self.ws_feature_dict[feat_id] = featureMapInfo
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def delete_ws_feature_dict(self, featureMapInfo: FeatureMapInfo):
+        try:
+            feat_id = featureMapInfo.id
+            del self.ws_feature_dict[feat_id]
+            return True
+        except Exception as e:
+            print(e)
+            return False

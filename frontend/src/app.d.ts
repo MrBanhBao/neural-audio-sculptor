@@ -80,7 +80,7 @@ type WaveSurferTrack = {
 
 type SelectedAudioTrack = {
 	name: string;
-	active: boolean
+	active: boolean;
 }
 
 type FeatureTrackInfo = {
@@ -88,4 +88,12 @@ type FeatureTrackInfo = {
 	selectedTrack: string;
 	selectedFeature: string;
 	audioData: number[] | null;
+}
+
+type FeatureMapInfo = {
+	id: string;
+	active: boolean;
+	track_name: str;
+	feature_name: str;
+	factor: float;
 }

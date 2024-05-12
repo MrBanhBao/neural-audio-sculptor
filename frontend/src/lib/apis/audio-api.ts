@@ -126,3 +126,9 @@ export async function getFeaturesFile(path: string) {
 
     return response;
 }
+
+export async function getTrackAndFeatureNames() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/audio/get/track-feat-names`);
+
+    return response;
+}

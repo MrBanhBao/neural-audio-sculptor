@@ -15,7 +15,8 @@ config: Config = Config.load(config_file=CONFIG_FILE)
 args_2D = Transform2DArgs()
 args_3D = Transform3DArgs()
 
-track_names = ["vocals", "drums", "bass", "piano", "other"]
+track_names = ["main", "vocals", "drums", "bass", "piano", "other"]
+feature_names = ["rms", "pitch", "tempo", "onset", "energy"]
 
 isFeaturesReady = False
 audio_features: Dict[str, Dict[str, List[float]]] = {}

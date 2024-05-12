@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { wsRoutineUrl } from '$lib/apis/audio-api';
+	import { wsRoutineUrl } from '$lib/apis/stylegan-api';
 	import { onMount, onDestroy } from 'svelte';
 	import { IconMultiplier1x, IconMultiplier2x, IconWindowMaximize } from '@tabler/icons-svelte';
 

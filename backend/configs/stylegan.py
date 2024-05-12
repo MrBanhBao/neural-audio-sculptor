@@ -1,38 +1,38 @@
 import uuid
 from typing import List
 
-from data_models.models import FeatureMapInfos
+from data_models.models import FeatureMapInfo
 
-speed_feature_maps_infos: List[FeatureMapInfos] = [
-        FeatureMapInfos.init(
+speed_feature_maps_infos: List[FeatureMapInfo] = [
+        FeatureMapInfo.init(
             id=str(uuid.uuid4()),
             active=True,
             track_name="vocals",
             feature_name="energy",
             factor=1.5,
         ),
-        FeatureMapInfos.init(
+        FeatureMapInfo.init(
             id=str(uuid.uuid4()),
             active=True,
             track_name="drums",
             feature_name="onset",
             factor=2.5,
         ),
-        FeatureMapInfos.init(
+        FeatureMapInfo.init(
             id=str(uuid.uuid4()),
             active=True,
             track_name="bass",
             feature_name="rms",
             factor=1,
         ),
-        FeatureMapInfos.init(
+        FeatureMapInfo.init(
             id=str(uuid.uuid4()),
             active=True,
             track_name="piano",
             feature_name="pitch",
             factor=1,
         ),
-        FeatureMapInfos.init(
+        FeatureMapInfo.init(
             id=str(uuid.uuid4()),
             active=True,
             track_name="other",
@@ -52,43 +52,43 @@ ws_name_indices_mapping = {
 }
 
 
-ws_feature_maps_infos: List[FeatureMapInfos] = [
-        FeatureMapInfos.init(
+ws_feature_maps_infos: List[FeatureMapInfo] = [
+        FeatureMapInfo.init(
             id="ws0_2",
             active=True,
             track_name="vocals",
             feature_name="energy",
             factor=0.3,
         ),
-        FeatureMapInfos.init(
+        FeatureMapInfo.init(
             id="ws3_5",
             active=True,
             track_name="drums",
             feature_name="onset",
             factor=0.3,
         ),
-        FeatureMapInfos.init(
+        FeatureMapInfo.init(
             id="ws6_8",
             active=True,
             track_name="bass",
             feature_name="rms",
             factor=0.3,
         ),
-        FeatureMapInfos.init(
+        FeatureMapInfo.init(
             id="ws9_11",
             active=True,
             track_name="piano",
             feature_name="pitch",
             factor=0.3,
         ),
-        FeatureMapInfos.init(
+        FeatureMapInfo.init(
             id="ws12_14",
             active=True,
             track_name="other",
             feature_name="rms",
             factor=0.3,
         ),
-        FeatureMapInfos.init(
+        FeatureMapInfo.init(
             id="ws12_14",
             active=True,
             track_name="main",

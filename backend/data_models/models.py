@@ -248,7 +248,7 @@ class SelectedAudioTrack(BaseModel):
     active: bool
 
 
-class FeatureMapInfos(BaseModel):
+class FeatureMapInfo(BaseModel):
     id: str
     active: bool
     track_name: str

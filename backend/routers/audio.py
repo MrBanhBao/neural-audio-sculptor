@@ -40,7 +40,7 @@ def load_audio(audio_path: StringValue, background_tasks: BackgroundTasks) -> Au
     folder_name = os.path.splitext(audio_meta_data.file_name)[0]
     directory = os.path.join(cache_dir, folder_name)
 
-    files = [os.path.join(directory, f"{track}.wav") for track in track_names]
+    files = [os.path.join(directory, f"{track}.wav") for track in track_names[1:]]
     if not is_splitted(files):
         create_directory(directory)
         splitted_audio_data_tracks = split_audio(audio_data=audio_data, save_dir=directory)
@@ -135,7 +135,7 @@ def set_current_frame() -> JSONResponse:
 
 
 @router.post("/set/player/selected-audio-track")
-def set_current_frame(data: SelectedAudioTrack):
+def set_current_frame(data: SelectedAudioTrack) -> JSONResponse:
     try:
         success = audio_player.set_selected_audio_tracks(data.name, data.active)
         if success:
@@ -153,3 +153,7 @@ def get_features(path: str):
     else:
         return JSONResponse(status_code=500, content=f"Features are not ready yet.")
 
+
+@router.get("/get/track-feat-names")
+def get_features() -> dict[str, List[str]]:
+    return {"trackNames": store.track_names, "featureNames": store.feature_names}
