@@ -46,7 +46,7 @@ def load_audio(audio_path: StringValue, background_tasks: BackgroundTasks) -> Au
         splitted_audio_data_tracks = split_audio(audio_data=audio_data, save_dir=directory)
     else:
         print(f'Found splitted audio data for {folder_name}.')
-        splitted_audio_data_tracks = load_audio_data_tracks(directory, track_names)
+        splitted_audio_data_tracks = load_audio_data_tracks(directory, track_names[1:])
 
     audio_data_tracks.update(splitted_audio_data_tracks)
 

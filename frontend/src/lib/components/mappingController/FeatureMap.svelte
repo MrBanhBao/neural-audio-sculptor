@@ -1,50 +1,65 @@
 <script lang="ts">
 	import { setSpeedFeatureInfo } from '$lib/apis/stylegan-api';
+	import { SlideToggle } from '@skeletonlabs/skeleton';
 
+	export let endpointFunction: Function;
 	export let featureMapInfo: FeatureMapInfo;
 	export let trackOptions: string[];
 	export let featureOptions: string[];
 	export let showId: boolean = false;
-	export const maxFactorValue: number = 5;
+	export let maxFactorValue: number = 5;
+	export let stepSize: number = 0.1;
 
 	let selectedTrack: string = featureMapInfo.track_name;
 	let selectedFeature: string = featureMapInfo.feature_name;
 
 	async function onchange() {
-		console.log(featureMapInfo);
-		const response = await setSpeedFeatureInfo(featureMapInfo);
+		const response = await endpointFunction(featureMapInfo);
 		console.log(await response.json());
 	}
 </script>
 
-<div class="flex flex-row justify-center">
-	<div>
-		<input type="checkbox" bind:checked={featureMapInfo.active} on:change={onchange} />
-	</div>
-	<div>
+<tr>
+	{#if showId}
+		<td class="centered">{featureMapInfo.id}</td>
+	{/if}
+	<td class="centered">
+		<SlideToggle name="slide" bind:checked={featureMapInfo.active} on:change={onchange}
+		></SlideToggle>
+	</td>
+	<td class="centered">
 		<select class="select" bind:value={featureMapInfo.track_name} on:change={onchange}>
 			{#each trackOptions as trackOption}
 				<option value={trackOption}>{trackOption}</option>
 			{/each}
 		</select>
-	</div>
-	<div>
+	</td>
+	<td class="centered">
 		<select class="select" bind:value={featureMapInfo.feature_name} on:change={onchange}>
 			{#each featureOptions as featureOption}
 				<option value={featureOption}>{featureOption}</option>
 			{/each}
 		</select>
-	</div>
-	<div class="flex flex-col items-center">
-		<input
-			class="mt-4"
-			type="range"
-			bind:value={featureMapInfo.factor}
-			min="0"
-			max={maxFactorValue}
-			step="0.1"
-			on:input={onchange}
-		/>
-		<span>{featureMapInfo.factor}</span>
-	</div>
-</div>
+	</td>
+	<td class="centered">
+		<div class="flex flex-col items-center">
+			<input
+				class="mt-4"
+				type="range"
+				bind:value={featureMapInfo.factor}
+				min="0"
+				max={maxFactorValue}
+				step={stepSize}
+				on:input={onchange}
+			/>
+			<span>{featureMapInfo.factor}</span>
+		</div>
+	</td>
+</tr>
+
+<style>
+	.centered {
+		text-align: center;
+		vertical-align: middle;
+	}
+</style>

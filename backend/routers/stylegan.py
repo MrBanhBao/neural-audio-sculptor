@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-model_file = "/home/hao/Documents/stylegan2_models/afhqcat.pkl"
+model_file = "/home/hao/Documents/stylegan2_models/VisionaryArt.pkl"
 generator = StyleGan2Ada(model_file=model_file, device=None)
 hop_length = store.config.audio.hop_length
 

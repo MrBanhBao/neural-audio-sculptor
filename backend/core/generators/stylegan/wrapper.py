@@ -112,15 +112,16 @@ class StyleGan2Ada:
     def _modify_ws(self, index: int,  ws: torch.Tensor) -> torch.Tensor:
         if store.audio_features:
             for featureMapInfo in self.ws_feature_dict.values():
-                feature_info_id: str = featureMapInfo.id
-                track_name: str = featureMapInfo.track_name
-                feature_name: str = featureMapInfo.feature_name
-                factor: float = featureMapInfo.factor
+                if featureMapInfo.active:
+                    feature_info_id: str = featureMapInfo.id
+                    track_name: str = featureMapInfo.track_name
+                    feature_name: str = featureMapInfo.feature_name
+                    factor: float = featureMapInfo.factor
 
-                ws_indices: List[int] = ws_name_indices_mapping[feature_info_id]
-                feature_value: float = store.audio_features[track_name][feature_name][index]
+                    ws_indices: List[int] = ws_name_indices_mapping[feature_info_id]
+                    feature_value: float = store.audio_features[track_name][feature_name][index]
 
-                ws[:, ws_indices] = ws[:, ws_indices] + (self.store.ws_direction[:, ws_indices] * feature_value * factor)
+                    ws[:, ws_indices] = ws[:, ws_indices] + (self.store.ws_direction[:, ws_indices] * feature_value * factor)
         return ws
 
     def get_speed_feature_infos(self) -> List[FeatureMapInfo]:

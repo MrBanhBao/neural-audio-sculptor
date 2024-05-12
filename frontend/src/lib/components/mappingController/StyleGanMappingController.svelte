@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { getWsFeatureInfos, getSpeedFeatureInfos } from '$lib/apis/stylegan-api';
+	import {
+		getWsFeatureInfos,
+		getSpeedFeatureInfos,
+		setSpeedFeatureInfo,
+		setWsFeatureInfo
+	} from '$lib/apis/stylegan-api';
 	import { getTrackAndFeatureNames } from '$lib/apis/audio-api';
 	import { onMount } from 'svelte';
 	import FeatureMap from './FeatureMap.svelte';
@@ -40,8 +45,51 @@
 
 <div class="card p-4">
 	<span>Speed:</span>
-	{#each speedFeatureMapInfos as info (info.id)}
-		<FeatureMap featureMapInfo={info} trackOptions={trackNames} featureOptions={featureNames}
-		></FeatureMap>
-	{/each}
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>Active</th>
+				<th>Track</th>
+				<th>Feature</th>
+				<th>Factor</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each speedFeatureMapInfos as info (info.id)}
+				<FeatureMap
+					endpointFunction={setSpeedFeatureInfo}
+					featureMapInfo={info}
+					trackOptions={trackNames}
+					featureOptions={featureNames}
+				></FeatureMap>
+			{/each}
+		</tbody>
+	</table>
+</div>
+
+<div class="card p-4">
+	<span>WS:</span>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Active</th>
+				<th>Track</th>
+				<th>Feature</th>
+				<th>Factor</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each wsFeatureMapInfos as info (info.id)}
+				<FeatureMap
+					endpointFunction={setWsFeatureInfo}
+					featureMapInfo={info}
+					trackOptions={trackNames}
+					featureOptions={featureNames}
+					showId={true}
+					maxFactorValue={10}
+				></FeatureMap>
+			{/each}
+		</tbody>
+	</table>
 </div>
