@@ -134,7 +134,7 @@ class Transform2DArgs(BaseModel):
         scale_x (float): Scale value in width.
         scale_y (float): Scale value in height.
     """
-    padding_mode: Literal['border', 'zeros', 'reflection'] = "border"
+    padding_mode: Literal['border', 'zeros', 'reflection'] = "reflection"
     rotate_angle: float = 0
     translate_x: float = 0
     translate_y: float = 0
@@ -154,7 +154,7 @@ class Transform3DArgs(BaseModel):
         translate_y (float): Value for translation on y-axis.
         translate_z (float): Value for translation on z-axis.
     """
-    padding_mode: Literal['border', 'zeros', 'reflection'] = "border"
+    padding_mode: Literal['border', 'zeros', 'reflection'] = "reflection"
     rotate_x: float = 0
     rotate_y: float = 0
     rotate_z: float = 0

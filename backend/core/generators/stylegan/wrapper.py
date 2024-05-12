@@ -63,7 +63,7 @@ class StyleGan2Ada:
         img = self.Gs.synthesis(ws, noise_mode=noise_mode)
         return (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
 
-    def calculate_image_with_transformation(self, ws: torch.Tensor, target_layer_idx: int = 3,
+    def calculate_image_with_transformation(self, ws: torch.Tensor, target_layer_idx: int = 3, noise_mode: str = "const",
                                             transform_args: Union[Transform2DArgs, Transform3DArgs, None] = None):
         w_idx = 0
         x = None
@@ -71,7 +71,7 @@ class StyleGan2Ada:
 
         for layer_idx, block in enumerate(self.Gs.synthesis.children()):
             cur_ws = ws.narrow(1, w_idx, block.num_conv + block.num_torgb)
-            x, img_tensor = block(x, img_tensor, cur_ws, noise_mode="const")
+            x, img_tensor = block(x, img_tensor, cur_ws, noise_mode=noise_mode)
 
             if layer_idx == target_layer_idx:
                 if isinstance(transform_args, Transform3DArgs):
@@ -112,6 +112,8 @@ class StyleGan2Ada:
 
         z_interpolate = z_interpolate + (z_direction * speed)
 
+
+        # transformations
         with torch.no_grad():
             ws: torch.Tensor = self.calculate_ws(z=z_interpolate, label=label, truncation_psi=truncation_psi)
             ws = self._modify_ws(index, ws)
