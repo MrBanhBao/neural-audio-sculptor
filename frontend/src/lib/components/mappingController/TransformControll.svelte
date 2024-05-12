@@ -35,8 +35,8 @@
 				class="mt-4"
 				type="range"
 				bind:value={args3d.rotate_x}
-				min="-1"
-				max="1"
+				min="-2"
+				max="2"
 				step="0.01"
 				on:input={onChange}
 			/>
@@ -47,9 +47,9 @@
 				class="mt-4"
 				type="range"
 				bind:value={args3d.rotate_y}
-				min="-1"
-				max="1"
-				step="0.01"
+				min="-2"
+				max="2"
+				step="0.001"
 				on:input={onChange}
 			/>
 			<span>Rote Y: {args3d.rotate_y}</span>
@@ -59,24 +59,24 @@
 				class="mt-4"
 				type="range"
 				bind:value={args3d.rotate_z}
-				min="-1"
-				max="1"
-				step="0.01"
+				min="-2"
+				max="2"
+				step="0.001"
 				on:input={onChange}
 			/>
-			<span>Rote Z: {args3d.rotate_z}</span>
+			<span>Rote Z: {args3d.rotate_z}</span>http://localhost:5173/
 		</div>
 		<div class="flex flex-col items-center">
 			<input
 				class="mt-4"
 				type="range"
 				bind:value={args3d.translate_x}
-				min="-1"
-				max="1"
-				step="0.01"
+				min="-2"
+				max="2"
+				step="0.001"
 				on:input={onChange}
 			/>
-			<span>Transl X: {args3d.translate_x}</span>
+			<span>Transl X: {args3d.translate_x}</span>http://localhost:5173/
 		</div>
 		<div class="flex flex-col items-center">
 			<input
@@ -95,8 +95,8 @@
 				class="mt-4"
 				type="range"
 				bind:value={args3d.translate_z}
-				min="-1"
-				max="1"
+				min="-2"
+				max="2"
 				step="0.01"
 				on:input={onChange}
 			/>

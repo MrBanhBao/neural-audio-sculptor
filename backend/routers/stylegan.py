@@ -1,4 +1,5 @@
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
@@ -16,14 +17,25 @@ router = APIRouter(
 )
 
 
-model_file = "/home/hao/Documents/stylegan2_models/VisionaryArt.pkl"
+model_file = "/home/hao/Documents/stylegan2_models/metfaces.pkl"
 generator = StyleGan2Ada(model_file=model_file, device=None)
 hop_length = store.config.audio.hop_length
 
+executor = ThreadPoolExecutor()
 @router.get("/")
 async def root():
     pass
 
+async def run_blocking_function():
+    loop = asyncio.get_event_loop()
+    result = await loop.run_in_executor(executor, generate_image)
+    return result
+
+def generate_image():
+    index = int(audio_player.current_frame / hop_length)
+    img_array = generator.routine(index=index, transform_args=store.args_3D)
+    img_byte: bytes = img_array_to_image_byte_pil(img_array)
+    return img_byte
 
 @router.websocket("/ws/routine")
 async def run_routine(websocket: WebSocket):
@@ -31,11 +43,9 @@ async def run_routine(websocket: WebSocket):
     try:
         while True:
             if audio_player.playback_state.play:
-                index = int(audio_player.current_frame / hop_length)
-                img_array = generator.routine(index=index, transform_args=store.args_3D)
-                img_byte: bytes = img_array_to_image_byte_pil(img_array)
+                img_byte: bytes = await run_blocking_function()
                 await websocket.send_bytes(img_byte)
-                await asyncio.sleep(0)
+                # await asyncio.sleep(0)
             else:
                 # release routine when nothing is happening
                 await asyncio.sleep(0)

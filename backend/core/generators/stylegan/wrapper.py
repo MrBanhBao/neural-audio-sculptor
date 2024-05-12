@@ -113,7 +113,8 @@ class StyleGan2Ada:
         z_interpolate = z_interpolate + (z_direction * speed)
 
 
-        # transformations
+        # TODO: transformations!!!!!
+        store.args_3D.rotate_z = store.audio_features["drums"]["rms"][index] * 0.025
         with torch.no_grad():
             ws: torch.Tensor = self.calculate_ws(z=z_interpolate, label=label, truncation_psi=truncation_psi)
             ws = self._modify_ws(index, ws)
