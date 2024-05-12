@@ -2,10 +2,11 @@ import copy
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 import utils.store as store
-from data_models import Folder, Config
+from data_models import Folder, Config, Transform2DArgs, Transform3DArgs
 from routers import audio, diffusion, stylegan
 from utils import create_nested_file_structure
 
@@ -52,6 +53,36 @@ def get_filestructure() -> Config:
         return config
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/get/transform-2d-args")
+def get_transform_2d_args() -> Transform2DArgs:
+    return store.args_2D
+
+
+@app.get("/get/transform-3d-args")
+def get_transform_3d_args() -> Transform3DArgs:
+    return store.args_3D
+
+
+@app.put("/set/transform-2d-args")
+def update_transform_2d_args(args2d: Transform2DArgs) -> JSONResponse:
+    try:
+        store.args_2D = args2d
+
+        return JSONResponse(content="2D args updated successfully.", status_code=201)
+    except Exception as e:
+        print(e)
+        return JSONResponse(content="2D args updated failed.", status_code=500)
+
+
+@app.put("/set/transform-3d-args")
+def update_transform_3d_args(args3d: Transform3DArgs) -> JSONResponse:
+    try:
+        store.args_3D = args3d
+        return JSONResponse(content="3D args updated successfully.", status_code=201)
+    except Exception as e:
+        print(e)
+        return JSONResponse(content="3D args updated failed.", status_code=500)
 
 
 if __name__ == "__main__":

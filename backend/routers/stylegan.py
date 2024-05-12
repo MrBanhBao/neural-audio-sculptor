@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-model_file = "/home/hao/Documents/stylegan2_models/VisionaryArt.pkl"
+model_file = "/home/hao/Documents/stylegan2_models/afhqcat.pkl"
 generator = StyleGan2Ada(model_file=model_file, device=None)
 hop_length = store.config.audio.hop_length
 
@@ -32,7 +32,7 @@ async def run_routine(websocket: WebSocket):
         while True:
             if audio_player.playback_state.play:
                 index = int(audio_player.current_frame / hop_length)
-                img_array = generator.routine(index=index)
+                img_array = generator.routine(index=index, transform_args=store.args_3D)
                 img_byte: bytes = img_array_to_image_byte_pil(img_array)
                 await websocket.send_bytes(img_byte)
                 await asyncio.sleep(0)

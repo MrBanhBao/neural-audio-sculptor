@@ -49,3 +49,35 @@ export async function getFileStructure(path: string) {
     return response;
 }
 
+
+export async function getTransform2dArgs() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/transform-2d-args`)
+
+    return response;
+}
+
+export async function getTransform3dArgs() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/transform-3d-args`)
+
+    return response;
+}
+
+export async function setTransform2dArgs(args: Transform2DArgs) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/set/transform-2d-args`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(args)
+    });
+
+    return response;
+}
+
+export async function setTransform3dArgs(args: Transform3DArgs) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/set/transform-3d-args`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(args)
+    });
+
+    return response;
+}

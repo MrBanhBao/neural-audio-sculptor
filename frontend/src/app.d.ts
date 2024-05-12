@@ -97,3 +97,22 @@ type FeatureMapInfo = {
 	feature_name: str;
 	factor: float;
 }
+
+type Transform2DArgs = {
+	padding_mode: str;
+	rotate_angle: float;
+	translate_x: float;
+	translate_y: float;
+	scale_x: float;
+	scale_y: float;
+}
+
+type Transform3DArgs = {
+	padding_mode: str;
+	rotate_x: float;
+	rotate_y: float;
+	rotate_z: float;
+	translate_x: float;
+	translate_y: float;
+	translate_z: float;
+}

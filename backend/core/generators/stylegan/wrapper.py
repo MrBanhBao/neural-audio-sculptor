@@ -9,7 +9,8 @@ import torch
 import utils.store as store
 from configs.stylegan import speed_feature_maps_infos, ws_feature_maps_infos, ws_name_indices_mapping
 from core.generators.utils import has_passed, create_direction_vector
-from data_models import FeatureMapInfo, StyleGanStore
+from core.transformations.geometric_transformations import transform_3D, transform_2D
+from data_models import FeatureMapInfo, StyleGanStore, Transform3DArgs, Transform2DArgs
 
 sys.path.insert(0, os.path.abspath("../backend/libs/stylegan2-ada-pytorch"))
 
@@ -62,12 +63,48 @@ class StyleGan2Ada:
         img = self.Gs.synthesis(ws, noise_mode=noise_mode)
         return (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
 
+    def calculate_image_with_transformation(self, ws: torch.Tensor, target_layer_idx: int = 3,
+                                            transform_args: Union[Transform2DArgs, Transform3DArgs, None] = None):
+        w_idx = 0
+        x = None
+        img_tensor = None
+
+        for layer_idx, block in enumerate(self.Gs.synthesis.children()):
+            cur_ws = ws.narrow(1, w_idx, block.num_conv + block.num_torgb)
+            x, img_tensor = block(x, img_tensor, cur_ws, noise_mode="const")
+
+            if layer_idx == target_layer_idx:
+                if isinstance(transform_args, Transform3DArgs):
+                    x = transform_3D(tensor=x,
+                                     rotate_x=transform_args.rotate_x,
+                                     rotate_y=transform_args.rotate_y,
+                                     rotate_z=transform_args.rotate_z,
+                                     translate_x=transform_args.translate_x,
+                                     translate_y=transform_args.translate_y,
+                                     translate_z=transform_args.translate_z,
+                                     padding_mode=transform_args.padding_mode)
+                elif isinstance(transform_args, Transform2DArgs):
+                    x = transform_2D(tensor=x,
+                                     rotate_angle=transform_args.rotate_angle,
+                                     translate_x=transform_args.translate_x,
+                                     translate_y=transform_args.translate_y,
+                                     scale_x=transform_args.scale_x,
+                                     scale_y=transform_args.scale_y,
+                                     padding_mode=transform_args.padding_mode)
+                else:
+                    pass
+            w_idx += block.num_conv
+
+        return (img_tensor.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
+
     def forward(self, z: torch.Tensor, truncation_psi: float = 1.2, noise_mode="const"):
         ws = self.Gs.mapping(z, None, truncation_psi=truncation_psi)
         img = self.Gs.synthesis(ws, noise_mode=noise_mode)
         return (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
 
-    def routine(self, index: int, label: Union[int, None] = None, truncation_psi: float = 1.2, noise_mode="const"):
+    def routine(self, index: int, label: Union[int, None] = None,
+                truncation_psi: float = 1.2, noise_mode="const",
+                transform_args: Union[Transform2DArgs, Transform3DArgs, None] = None):
         speed = self._calculate_speed_value(index=index)
         z_interpolate: torch.Tensor = self.store.z_interpolate
         z_direction: torch.Tensor = self.store.z_direction
@@ -79,7 +116,10 @@ class StyleGan2Ada:
             ws: torch.Tensor = self.calculate_ws(z=z_interpolate, label=label, truncation_psi=truncation_psi)
             ws = self._modify_ws(index, ws)
 
-            img = self.calculate_image(ws, noise_mode=noise_mode)
+            if transform_args:
+                img = self.calculate_image_with_transformation(ws=ws, target_layer_idx=3, transform_args=transform_args)
+            else:
+                img = self.calculate_image(ws, noise_mode=noise_mode)
 
         # change target when it was reached
         if has_passed(z_interpolate, z_target, z_direction):
@@ -87,9 +127,6 @@ class StyleGan2Ada:
             self.store.z_target = torch.randn([1, self.z_dim]).to(self.device)
             self.store.z_direction = create_direction_vector(self.store.z_start, self.store.z_target)
             self.store.ws_direction = torch.from_numpy(np.random.choice([-1, 1], size=[1, self.num_ws, self.z_dim])).to(self.device)
-
-
-        # TODO: add transformations
 
         # Update store
         self.store.z_interpolate = z_interpolate

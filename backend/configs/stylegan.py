@@ -144,15 +144,15 @@ list3_steps = [
 
 list2step = [
     FeatureMapInfo(id="ws1-2", active=True, track_name="drums", feature_name="rms", factor=3),
-    FeatureMapInfo(id="ws3-4", active=True, track_name="drums", feature_name="rms", factor=3),
-    FeatureMapInfo(id="ws5-6", active=True, track_name="vocals", feature_name="rms", factor=3),
-    FeatureMapInfo(id="ws7-8", active=True, track_name="vocals", feature_name="rms", factor=3),
-    FeatureMapInfo(id="ws9-10", active=True, track_name="bass", feature_name="rms", factor=3),
-    FeatureMapInfo(id="ws11-12", active=True, track_name="piano", feature_name="rms", factor=3),
-    FeatureMapInfo(id="ws13-14", active=True, track_name="other", feature_name="rms", factor=3),
+    FeatureMapInfo(id="ws3-4", active=True, track_name="vocals", feature_name="rms", factor=3),
+    FeatureMapInfo(id="ws5-6", active=True, track_name="other", feature_name="rms", factor=3),
+    FeatureMapInfo(id="ws7-8", active=True, track_name="bass", feature_name="rms", factor=3),
+    FeatureMapInfo(id="ws9-10", active=True, track_name="piano", feature_name="rms", factor=3),
+    FeatureMapInfo(id="ws11-12", active=False, track_name="drums", feature_name="rms", factor=3),
+    FeatureMapInfo(id="ws13-14", active=False, track_name="drums", feature_name="rms", factor=3),
     FeatureMapInfo(id="ws15-16", active=False, track_name="main", feature_name="rms", factor=3)]
 
-list1step =  [
+list1step = [
     FeatureMapInfo(id="ws1", active=True, track_name="drums", feature_name="rms", factor=1),
     FeatureMapInfo(id="ws2", active=True, track_name="drums", feature_name="rms", factor=1),
     FeatureMapInfo(id="ws3", active=True, track_name="drums", feature_name="rms", factor=1),
