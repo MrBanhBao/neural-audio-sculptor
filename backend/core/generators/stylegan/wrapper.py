@@ -11,15 +11,9 @@ from configs.stylegan import speed_feature_maps_infos, ws_feature_maps_infos, ws
 from core.generators.utils import has_passed, create_direction_vector
 from core.transformations.geometric_transformations import transform_3D, transform_2D
 from data_models import FeatureMapInfo, StyleGanStore, Transform3DArgs, Transform2DArgs
+from utils.utils import init_feature_map_info_dict
 
 sys.path.insert(0, os.path.abspath("../backend/libs/stylegan2-ada-pytorch"))
-
-def init_feature_map_info_dict(feature_infos: List[FeatureMapInfo]) -> Dict[str, FeatureMapInfo]:
-    feature_maps_info = {}
-    for info in feature_infos:
-        feature_maps_info[info.id] = info
-
-    return feature_maps_info
 
 class StyleGan2Ada:
     def __init__(self, model_file: str, device: str = None) -> None:
@@ -112,9 +106,6 @@ class StyleGan2Ada:
 
         z_interpolate = z_interpolate + (z_direction * speed)
 
-
-        # TODO: transformations!!!!!
-        store.args_3D.rotate_z = store.audio_features["drums"]["rms"][index] * 0.025
         with torch.no_grad():
             ws: torch.Tensor = self.calculate_ws(z=z_interpolate, label=label, truncation_psi=truncation_psi)
             ws = self._modify_ws(index, ws)

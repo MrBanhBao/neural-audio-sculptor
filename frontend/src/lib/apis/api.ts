@@ -50,11 +50,11 @@ export async function getFileStructure(path: string) {
 }
 
 
-export async function getTransform2dArgs() {
+/* export async function getTransform2dArgs() {
     const response = await fetch(`http://${HOST}:${PORT}/api/get/transform-2d-args`)
 
     return response;
-}
+} */
 
 export async function getTransform3dArgs() {
     const response = await fetch(`http://${HOST}:${PORT}/api/get/transform-3d-args`)
@@ -62,8 +62,18 @@ export async function getTransform3dArgs() {
     return response;
 }
 
-export async function setTransform2dArgs(args: Transform2DArgs) {
+/* export async function setTransform2dArgs(args: Transform2DArgs) {
     const response = await fetch(`http://${HOST}:${PORT}/api/set/transform-2d-args`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(args)
+    });
+
+    return response;
+} */
+
+export async function setTransform3dArgs(args: Transform3DArgs) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/set/transform-3d-args`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(args)
@@ -72,12 +82,26 @@ export async function setTransform2dArgs(args: Transform2DArgs) {
     return response;
 }
 
-export async function setTransform3dArgs(args: Transform3DArgs) {
-    const response = await fetch(`http://${HOST}:${PORT}/api/set/transform-3d-args`, {
-        method: 'PUT',
+export async function getTransform3dFeatureInfos() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/args3d/feature-mapping`);
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
+
+export async function setTransform3dFeatureInfo(info: FeatureMapInfo) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/set/args3d/feature-mapping`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(args)
+        body: JSON.stringify(info)
     });
+
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
 
     return response;
 }

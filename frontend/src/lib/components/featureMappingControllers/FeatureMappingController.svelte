@@ -38,8 +38,6 @@
 		const trackAndFeatLists = await getTrackAndFeatureNameList();
 		trackNames = trackAndFeatLists.trackNames;
 		featureNames = trackAndFeatLists.featureNames;
-		console.log(trackNames);
-		console.log(featureNames);
 	});
 </script>
 

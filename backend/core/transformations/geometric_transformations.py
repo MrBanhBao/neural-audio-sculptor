@@ -1,4 +1,5 @@
 import math
+import warnings
 
 import torch
 import torch.nn.functional as F
@@ -91,7 +92,8 @@ def transform_3D(tensor: torch.Tensor, rotate_x: float = 0, rotate_y: float = 0,
 
     coords_2d = F.affine_grid(identity_2d_batch, [batch, channel, height, width], align_corners=False)
     offset_coords_2d = coords_2d - torch.reshape(xy_offset_points, (height, width, 2)).unsqueeze(0)
-
-    tensor = F.grid_sample(tensor, offset_coords_2d, padding_mode=padding_mode)  # "border", "reflection", "zeros"
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        tensor = F.grid_sample(tensor, offset_coords_2d, padding_mode=padding_mode)  # "border", "reflection", "zeros"
 
     return tensor

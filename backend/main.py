@@ -1,4 +1,5 @@
 import copy
+from typing import List
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -6,7 +7,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 import utils.store as store
-from data_models import Folder, Config, Transform2DArgs, Transform3DArgs
+from data_models import Folder, Config, Transform2DArgs, Transform3DArgs, FeatureMapInfo
 from routers import audio, diffusion, stylegan
 from utils import create_nested_file_structure
 
@@ -83,6 +84,20 @@ def update_transform_3d_args(args3d: Transform3DArgs) -> JSONResponse:
     except Exception as e:
         print(e)
         return JSONResponse(content="3D args updated failed.", status_code=500)
+
+@app.get("/get/args3d/feature-mapping")
+def get_3d_transform_feature_infos() -> List[FeatureMapInfo]:
+    return list(store.transform_3d_mapping_dict.values())
+
+@app.post("/set/args3d/feature-mapping")
+def modify_3d_transform_feature_infos(featureMapInfo: FeatureMapInfo):
+    try:
+        feat_id = featureMapInfo.id
+        store.transform_3d_mapping_dict[feat_id] = featureMapInfo
+        return JSONResponse(content="Modified 3d transform feature mapping successfully.", status_code=201)
+    except Exception as e:
+        print(e)
+        return JSONResponse(content="Failed 3d transform feature mapping successfully.", status_code=500)
 
 
 if __name__ == "__main__":

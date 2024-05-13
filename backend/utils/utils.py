@@ -8,7 +8,7 @@ import torch
 from PIL import Image
 from numpy import typing as npt
 
-from data_models import File, Folder
+from data_models import File, Folder, Transform3DArgs, FeatureMapInfo
 
 
 def create_nested_file_structure(root_path: str) -> Folder:
@@ -132,3 +132,34 @@ def img_array_to_image_byte_pil(img_array: torch.Tensor, format: str = "JPEG") -
         img.save(buf, format=format)
         img_bytes = buf.getvalue()
         return img_bytes
+
+
+def init_feature_map_info_dict(feature_infos: List[FeatureMapInfo]) -> Dict[str, FeatureMapInfo]:
+    feature_maps_info = {}
+    for info in feature_infos:
+        feature_maps_info[info.id] = info
+
+    return feature_maps_info
+
+def map_values(x):
+    if x == 0:
+        return 0
+    elif x < 0.5:
+        return 2 * x - 1
+    else:
+        return 2 * x + 1
+def set_transform3d_maps(index: int, args:Transform3DArgs,
+                         map_infos: List[FeatureMapInfo],
+                         feature_dict: Dict[str, Dict[str, List[float]]]):
+    for map_info in map_infos:
+        feat_id: str = map_info.id
+        track_name: str = map_info.track_name
+        feature_name: str = map_info.feature_name
+        factor: float = map_info.factor
+        feature_value: float = feature_dict[track_name][feature_name][index]
+        value = feature_value * factor # TODO: HERE!!!!!!!!!!!
+        if map_info.active:
+            setattr(args, feat_id, value)
+        else:
+            setattr(args, feat_id, 0)
+    return args

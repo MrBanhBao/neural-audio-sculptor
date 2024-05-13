@@ -9,7 +9,7 @@ import utils.store as store
 from core.generators.stylegan.wrapper import StyleGan2Ada
 from data_models import FeatureMapInfo
 from routers.audio import audio_player
-from utils import img_array_to_image_byte_pil
+from utils import img_array_to_image_byte_pil, set_transform3d_maps
 
 router = APIRouter(
     prefix="/stylegan",
@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-model_file = "/home/hao/Documents/stylegan2_models/metfaces.pkl"
+model_file = "/home/hao/Documents/stylegan2_models/VisionaryArt.pkl"
 generator = StyleGan2Ada(model_file=model_file, device=None)
 hop_length = store.config.audio.hop_length
 
@@ -33,7 +33,14 @@ async def run_blocking_function():
 
 def generate_image():
     index = int(audio_player.current_frame / hop_length)
-    img_array = generator.routine(index=index, transform_args=store.args_3D)
+
+    # update args_3D
+    feat_args3d = set_transform3d_maps(index=index,
+                                      args=store.args_3D,
+                                      map_infos=list(store.transform_3d_mapping_dict.values()),
+                                      feature_dict=store.audio_features)
+
+    img_array = generator.routine(index=index, transform_args=feat_args3d)
     img_byte: bytes = img_array_to_image_byte_pil(img_array)
     return img_byte
 

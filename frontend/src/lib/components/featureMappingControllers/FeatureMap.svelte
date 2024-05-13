@@ -15,7 +15,6 @@
 
 	async function onchange() {
 		const response = await endpointFunction(featureMapInfo);
-		console.log(await response.json());
 	}
 </script>
 
