@@ -6,6 +6,16 @@ const webSocketUrl = `ws://${HOST}:${PORT}`
 export const wsRoutineUrl = `${webSocketUrl}/api/stylegan/ws/routine`
 
 
+export async function loadModelFile(path: StringValue) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/stylegan/load/file`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(path)
+    })
+
+    return response;
+}
+
 export async function getSpeedFeatureInfos() {
     const response = await fetch(`http://${HOST}:${PORT}/api/stylegan/get/speed/feature-mapping`);
     if (!response.ok) {

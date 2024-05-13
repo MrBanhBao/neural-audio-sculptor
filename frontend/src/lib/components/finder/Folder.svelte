@@ -5,6 +5,7 @@
 	export let name: string;
 	export let files: Array<TypeFolder | TypeFile>;
 	export let endpointFunction: Function;
+	export let handleResponseFunction: Function;
 
 	let expanded = false;
 
@@ -27,9 +28,9 @@
 		{#each files as file}
 			<li>
 				{#if 'files' in file}
-					<svelte:self {...file} {endpointFunction} />
+					<svelte:self {...file} {endpointFunction} {handleResponseFunction} />
 				{:else}
-					<File {...file} {endpointFunction} />
+					<File {...file} {endpointFunction} {handleResponseFunction} />
 				{/if}
 			</li>
 		{/each}

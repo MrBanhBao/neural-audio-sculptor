@@ -6,6 +6,7 @@
 	export let name: string;
 	export let path: string;
 	export let endpointFunction: Function;
+	export let handleResponseFunction: Function;
 
 	const audioFileExtensions: string[] = [
 		'mp3',
@@ -21,18 +22,11 @@
 	const pickleFileExtensions: string[] = ['pkl'];
 
 	async function handleClick() {
-		statusFeedback.set({ status: 'pending', message: 'Loading and splitting audio.' });
+		statusFeedback.set({ status: 'pending', message: 'Loading data...' });
 
 		const value: StringValue = { value: path };
 		const response = await endpointFunction(value);
-		if (response?.ok) {
-			const data = (await response.json()) as AudioMetaData;
-			audioMetaData.set(data);
-			statusFeedback.set({ status: 'successfull', message: 'Done loading and splitting audio.' });
-		} else {
-			console.log("failed")
-			statusFeedback.set({ status: 'failed', message: response.statusText });
-		}
+		handleResponseFunction(response);
 	}
 
 	$: fileExtention = name.slice(name.lastIndexOf('.') + 1).toLocaleLowerCase();

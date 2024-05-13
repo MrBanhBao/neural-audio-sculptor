@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 import utils.store as store
 from core.generators.stylegan.wrapper import StyleGan2Ada
-from data_models import FeatureMapInfo
+from data_models import FeatureMapInfo, StringValue
 from routers.audio import audio_player
 from utils import img_array_to_image_byte_pil, set_transform3d_maps
 
@@ -24,12 +24,24 @@ hop_length = store.config.audio.hop_length
 executor = ThreadPoolExecutor()
 @router.get("/")
 async def root():
-    pass
+    return "Hello from the StlyeGan API."
+
+
+@router.post("/load/file")
+async def load_model_file(model_path: StringValue):
+    try:
+        print(f"Loading Model File: {model_path}...")
+        generator.load_model(model_path.value)
+        return JSONResponse(status_code=200, content=f"Successfully load model file.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 async def run_blocking_function():
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(executor, generate_image)
     return result
+
 
 def generate_image():
     index = int(audio_player.current_frame / hop_length)

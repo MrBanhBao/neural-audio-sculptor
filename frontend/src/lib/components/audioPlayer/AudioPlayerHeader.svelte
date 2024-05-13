@@ -3,7 +3,7 @@
 	import Modal from '../utils/Modal.svelte';
 	import Finder from '$lib/components/finder/Finder.svelte';
 	import { loadAudioFile } from '$lib/apis/audio-api';
-	import { audioMetaData } from '$lib/stores/store';
+	import { audioMetaData, statusFeedback } from '$lib/stores/store';
 	import { onDestroy } from 'svelte';
 
 	let fileName = 'None';
@@ -16,6 +16,17 @@
 	onDestroy(() => {
 		unsubscribe();
 	});
+
+	async function handleResponseFunction(response) {
+		if (response?.ok) {
+			const data = (await response.json()) as AudioMetaData;
+			audioMetaData.set(data);
+			statusFeedback.set({ status: 'successfull', message: 'Done loading and splitting audio.' });
+		} else {
+			console.log('failed');
+			statusFeedback.set({ status: 'failed', message: response.statusText });
+		}
+	}
 </script>
 
 <header class="card-header flex flex-col items-start">
@@ -31,5 +42,6 @@
 </header>
 
 <Modal bind:showModal title="Music Finder">
-	<Finder configKeyName="music_dir" endpointFunction={loadAudioFile}></Finder>
+	<Finder configKeyName="music_dir" endpointFunction={loadAudioFile} {handleResponseFunction}
+	></Finder>
 </Modal>

@@ -7,6 +7,7 @@
 
 	export let configKeyName: string = 'music_dir';
 	export let endpointFunction: Function;
+	export let handleResponseFunction: Function;
 
 	let milliseconds = 2500;
 	let timeout: NodeJS.Timeout;
@@ -62,5 +63,10 @@
 		<div>Error: Failed to load file structure!</div>
 	{/if}
 {:else}
-	<Folder name={fileStructure.name} files={fileStructure.files} {endpointFunction}></Folder>
+	<Folder
+		name={fileStructure.name}
+		files={fileStructure.files}
+		{endpointFunction}
+		{handleResponseFunction}
+	></Folder>
 {/if}

@@ -1,12 +1,18 @@
 <script lang="ts">
 	import { wsRoutineUrl } from '$lib/apis/stylegan-api';
 	import { onMount, onDestroy } from 'svelte';
-	import { IconMultiplier1x, IconMultiplier2x, IconWindowMaximize } from '@tabler/icons-svelte';
+	import { IconPaint, IconWindowMaximize } from '@tabler/icons-svelte';
+	import Modal from '../utils/Modal.svelte';
+	import Finder from '$lib/components/finder/Finder.svelte';
+	import { loadModelFile } from '$lib/apis/stylegan-api';
+	import { statusFeedback } from '$lib/stores/store';
 
 	let ws: WebSocket;
 	let isConnected = false;
 	let winRef: Window | null = null;
 	let imgSrc: string = '/images/img-placeholder.jpg';
+
+	let showModal = false;
 
 	function connectWebSocket() {
 		ws = new WebSocket(wsRoutineUrl);
@@ -88,18 +94,40 @@
 	$: {
 		updateImage(imgSrc);
 	}
+
+	async function handleResponseFunction(response) {
+		if (response?.ok) {
+			statusFeedback.set({ status: 'successfull', message: 'Done loading model file.' });
+		} else {
+			console.log('failed');
+			statusFeedback.set({ status: 'failed', message: response.statusText });
+		}
+	}
 </script>
 
 <div class="card min-w-[400px] max-w-[400px] p-4">
-	<span> Information </span>
 	<div class="mb-2">
 		<img width="360" src={imgSrc} alt="generated for music viz." />
 	</div>
 	<div>
-		<button type="button" class="variant-filled btn-icon"><IconMultiplier1x /></button>
-		<button type="button" class="variant-filled btn-icon"><IconMultiplier2x /></button>
+		<button
+			type="button"
+			class="btn-m variant-filled-primary btn btn-md rounded-full"
+			on:click={() => (showModal = true)}
+		>
+			<span><IconPaint /></span>
+			<span>Load Model</span>
+		</button>
 		<button type="button" class="variant-filled btn-icon" on:click={openImage}
 			><IconWindowMaximize /></button
 		>
 	</div>
 </div>
+
+<Modal bind:showModal title="StyleGan Models">
+	<Finder
+		configKeyName="stylegan_checkpoints"
+		endpointFunction={loadModelFile}
+		{handleResponseFunction}
+	></Finder>
+</Modal>
