@@ -56,8 +56,14 @@ export async function getFileStructure(path: string) {
     return response;
 } */
 
-export async function getTransform3dArgs() {
-    const response = await fetch(`http://${HOST}:${PORT}/api/get/transform-3d-args`)
+export async function getTransformManual3dArgs() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/manual/transform-3d-args`)
+
+    return response;
+}
+
+export async function getTransformMapping3dArgs() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/mapping/transform-3d-args`)
 
     return response;
 }
@@ -92,8 +98,18 @@ export async function setTransformationMode(mode: StringValue) {
 }
 
 
-export async function setTransform3dArgs(args: Transform3DArgs) {
-    const response = await fetch(`http://${HOST}:${PORT}/api/set/transform-3d-args`, {
+export async function setTransformManual3dArgs(args: Transform3DArgs) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/set/manual/transform-3d-args`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(args)
+    });
+
+    return response;
+}
+
+export async function setTransformMapping3dArgs(args: Transform3DArgs) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/set/mapping/transform-3d-args`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(args)

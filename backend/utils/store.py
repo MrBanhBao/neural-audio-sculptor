@@ -17,7 +17,9 @@ config: Config = Config.load(config_file=CONFIG_FILE)
 
 # transformation
 args_2D = Transform2DArgs()
-args_3D = Transform3DArgs()
+manual_args_3D = Transform3DArgs()
+mapping_args_3D = Transform3DArgs()
+
 transform_3d_mapping_dict: Dict[str, FeatureMapInfo] = init_feature_map_info_dict(mappings_3d_infos)
 transformation_mode: Literal['mapping', 'manual'] = "mapping"
 

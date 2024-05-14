@@ -59,12 +59,6 @@ def get_filestructure() -> Config:
 def get_transform_2d_args() -> Transform2DArgs:
     return store.args_2D
 
-
-@app.get("/get/transform-3d-args")
-def get_transform_3d_args() -> Transform3DArgs:
-    return store.args_3D
-
-
 @app.put("/set/transform-2d-args")
 def update_transform_2d_args(args2d: Transform2DArgs) -> JSONResponse:
     try:
@@ -75,15 +69,35 @@ def update_transform_2d_args(args2d: Transform2DArgs) -> JSONResponse:
         print(e)
         return JSONResponse(content="2D args updated failed.", status_code=500)
 
+@app.get("/get/manual/transform-3d-args")
+def get_transform_3d_args() -> Transform3DArgs:
+    return store.manual_args_3D
 
-@app.put("/set/transform-3d-args")
+@app.get("/get/mapping/transform-3d-args")
+def get_transform_3d_args() -> Transform3DArgs:
+    return store.mapping_args_3D
+
+
+@app.put("/set/manual/transform-3d-args")
 def update_transform_3d_args(args3d: Transform3DArgs) -> JSONResponse:
     try:
-        store.args_3D = args3d
+        store.manual_args_3D = args3d
         return JSONResponse(content="3D args updated successfully.", status_code=201)
     except Exception as e:
         print(e)
         return JSONResponse(content="3D args updated failed.", status_code=500)
+
+
+@app.put("/set/mapping/transform-3d-args")
+def update_transform_3d_args(args3d: Transform3DArgs) -> JSONResponse:
+    try:
+        store.mapping_args_3D = args3d
+        return JSONResponse(content="3D args updated successfully.", status_code=201)
+    except Exception as e:
+        print(e)
+        return JSONResponse(content="3D args updated failed.", status_code=500)
+
+
 
 
 @app.get("/get/transformation/mode")

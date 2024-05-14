@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { setTransform3dArgs } from '$lib/apis/api';
-	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();

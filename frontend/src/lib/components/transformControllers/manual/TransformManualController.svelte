@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { getTransform3dArgs, setTransform3dArgs } from '$lib/apis/api';
+	import { getTransformManual3dArgs, setTransformManual3dArgs } from '$lib/apis/api';
 	import { onMount } from 'svelte';
 	import TransformManualSlider from './TransformManualSlider.svelte';
 
 	let args3d: Transform3DArgs;
 
 	async function get3dArgs() {
-		const reponse = await getTransform3dArgs();
+		const reponse = await getTransformManual3dArgs();
 		const data = await reponse.json();
 		return data;
 	}
@@ -16,7 +16,7 @@
 	});
 
 	async function onChange(e) {
-		const response = await setTransform3dArgs(args3d);
+		const response = await setTransformManual3dArgs(args3d);
 		const data = await response.json();
 		console.log(data);
 	}
