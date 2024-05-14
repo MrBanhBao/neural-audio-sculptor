@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { IconWaveSine, IconWaveSawTool, IconTimeline, IconRun } from '@tabler/icons-svelte';
-	import { TabGroup, Tab, TabAnchor } from '@skeletonlabs/skeleton';
+	import { IconWaveSawTool, IconTimeline, IconRun } from '@tabler/icons-svelte';
+	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	import AudioTracker from '$lib/components/audioTracker/AudioTracker.svelte';
 	import FeatureTracker from '$lib/components/featureTracker/FeatureTracker.svelte';
 
