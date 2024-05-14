@@ -30,6 +30,14 @@ def create_nested_file_structure(root_path: str) -> Folder:
 
     return Folder(**nested_structure)
 
+def list_files(directory):
+    files = []
+    # Iterate over all files in the directory
+    for filename in os.listdir(directory):
+        # Check if the path is a file (not a directory)
+        if os.path.isfile(os.path.join(directory, filename)):
+            files.append(filename)
+    return files
 
 def __check_path(path: str) -> str:
     """
@@ -141,13 +149,6 @@ def init_feature_map_info_dict(feature_infos: List[FeatureMapInfo]) -> Dict[str,
 
     return feature_maps_info
 
-def map_values(x):
-    if x == 0:
-        return 0
-    elif x < 0.5:
-        return 2 * x - 1
-    else:
-        return 2 * x + 1
 def set_transform3d_maps(index: int, args:Transform3DArgs,
                          map_infos: List[FeatureMapInfo],
                          feature_dict: Dict[str, Dict[str, List[float]]]):

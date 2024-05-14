@@ -6,7 +6,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.responses import JSONResponse
 
 import utils.store as store
-from core.generators.stylegan.wrapper import StyleGan2Ada
+from core.generators.stylegan import StyleGan2Ada
 from data_models import FeatureMapInfo, StringValue
 from routers.audio import audio_player
 from utils import img_array_to_image_byte_pil, set_transform3d_maps
