@@ -16,11 +16,19 @@
 	}
 </script>
 
-<div class="flex flex-col">
-	<div>
-		<span class="ml-2">{name}:</span> <span>{value}</span>
-	</div>
-	<div>
-		<input class="mb-4" type="range" bind:value {min} {max} step={stepSize} on:input={onChange} />
-	</div>
-</div>
+<tr>
+	<td class="centered"> <span>{name}: </span></td>
+	<td class="centered">
+		<div class="flex flex-col items-center">
+			<input class="mt-4" type="range" bind:value {min} {max} step={stepSize} on:input={onChange} />
+			<span>{value}</span>
+		</div>
+	</td>
+</tr>
+
+<style>
+	.centered {
+		text-align: center;
+		vertical-align: middle;
+	}
+</style>

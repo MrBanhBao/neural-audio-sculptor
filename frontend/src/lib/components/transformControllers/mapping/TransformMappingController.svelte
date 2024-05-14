@@ -28,30 +28,27 @@
 	});
 </script>
 
-<div class="card p-4">
-	<span>Transformation:</span>
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Active</th>
-				<th>Track</th>
-				<th>Feature</th>
-				<th>Factor</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each transform3DMapInfos as info (info.id)}
-				<FeatureMap
-					endpointFunction={setTransform3dFeatureInfo}
-					featureMapInfo={info}
-					trackOptions={trackNames}
-					featureOptions={featureNames}
-					showId={true}
-					maxFactorValue={1}
-					stepSize={0.01}
-				></FeatureMap>
-			{/each}
-		</tbody>
-	</table>
-</div>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Active</th>
+			<th>Track</th>
+			<th>Feature</th>
+			<th>Factor</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each transform3DMapInfos as info (info.id)}
+			<FeatureMap
+				endpointFunction={setTransform3dFeatureInfo}
+				featureMapInfo={info}
+				trackOptions={trackNames}
+				featureOptions={featureNames}
+				showId={true}
+				maxFactorValue={1}
+				stepSize={0.01}
+			></FeatureMap>
+		{/each}
+	</tbody>
+</table>

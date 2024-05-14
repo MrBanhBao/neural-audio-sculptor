@@ -72,6 +72,26 @@ export async function getTransform3dArgs() {
     return response;
 } */
 
+export async function getTransformationMode() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/transformation/mode`);
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
+export async function setTransformationMode(mode: StringValue) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/set/transformation/mode`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mode)
+    });
+
+    return response;
+}
+
+
 export async function setTransform3dArgs(args: Transform3DArgs) {
     const response = await fetch(`http://${HOST}:${PORT}/api/set/transform-3d-args`, {
         method: 'PUT',

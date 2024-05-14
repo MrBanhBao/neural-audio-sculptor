@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 import utils.store as store
-from data_models import Folder, Config, Transform2DArgs, Transform3DArgs, FeatureMapInfo
+from data_models import Folder, Config, Transform2DArgs, Transform3DArgs, FeatureMapInfo, StringValue
 from routers import audio, diffusion, stylegan
 from utils import create_nested_file_structure
 
@@ -85,9 +85,22 @@ def update_transform_3d_args(args3d: Transform3DArgs) -> JSONResponse:
         print(e)
         return JSONResponse(content="3D args updated failed.", status_code=500)
 
+
+@app.get("/get/transformation/mode")
+def get_transformation_mode() -> StringValue:
+    value = StringValue(value=store.transformation_mode)
+    return value
+
+
+@app.put("/set/transformation/mode")
+def set_transformation_mode(mode: StringValue):
+    store.transformation_mode = mode.value
+    return True
+
 @app.get("/get/args3d/feature-mapping")
 def get_3d_transform_feature_infos() -> List[FeatureMapInfo]:
     return list(store.transform_3d_mapping_dict.values())
+
 
 @app.post("/set/args3d/feature-mapping")
 def modify_3d_transform_feature_infos(featureMapInfo: FeatureMapInfo):
