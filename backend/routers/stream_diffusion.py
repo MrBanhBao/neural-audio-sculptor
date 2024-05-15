@@ -2,7 +2,8 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi.responses import JSONResponse
 
 import utils.store as store
 from core.generators.stream_diffusion import StreamDiffuser
@@ -66,3 +67,30 @@ async def run_routine(websocket: WebSocket):
 @router.get("/get/speed/feature-mapping")
 async def get_speed_feature_infos() -> List[FeatureMapInfo]:
     return generator.get_speed_feature_infos()
+
+
+@router.post("/set/speed/feature-mapping")
+async def modify_speed_feature_dict(featureMapInfo: FeatureMapInfo) -> JSONResponse:
+    try:
+        success = generator.modify_speed_feature_dict(featureMapInfo)
+        if success:
+            return JSONResponse(status_code=200, content=f"Successfully modified feature mapping.")
+        else:
+            return JSONResponse(status_code=500, content=f"Failed modifying feature mapping.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/get/latent/feature-mapping")
+async def get_latent_feature_infos() -> List[FeatureMapInfo]:
+    return generator.get_latent_feature_infos()
+
+@router.post("/set/latent/feature-mapping")
+async def modify_latent_feature_dict(featureMapInfo: FeatureMapInfo) -> JSONResponse:
+    try:
+        success = generator.modify_latent_feature_dict(featureMapInfo)
+        if success:
+            return JSONResponse(status_code=200, content=f"Successfully modified feature mapping.")
+        else:
+            return JSONResponse(status_code=500, content=f"Failed modifying feature mapping.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

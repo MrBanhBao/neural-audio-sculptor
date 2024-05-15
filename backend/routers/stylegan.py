@@ -103,7 +103,6 @@ async def delete_speed_feature_dict(featureMapInfo: FeatureMapInfo) -> JSONRespo
 
 @router.get("/get/ws/feature-mapping")
 async def get_ws_feature_infos() -> List[FeatureMapInfo]:
-    print(generator.get_ws_feature_infos())
     return generator.get_ws_feature_infos()
 
 @router.post("/set/ws/feature-mapping")

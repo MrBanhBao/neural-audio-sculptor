@@ -206,10 +206,22 @@ class StreamDiffuser:
             print(e)
             return False
 
+    def get_latent_feature_infos(self) -> List[FeatureMapInfo]:
+        return list(self.latent_feature_dict.values())
+
     def modify_latent_feature_dict(self, featureMapInfo: FeatureMapInfo) -> bool:
         try:
             feat_id = featureMapInfo.id
             self.latent_feature_dict[feat_id] = featureMapInfo
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def delete_latent_feature_dict(self, featureMapInfo: FeatureMapInfo):
+        try:
+            feat_id = featureMapInfo.id
+            del self.latent_feature_dict[feat_id]
             return True
         except Exception as e:
             print(e)
