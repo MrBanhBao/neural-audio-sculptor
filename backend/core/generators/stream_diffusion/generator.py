@@ -10,7 +10,7 @@ from PIL import Image
 from PIL.Image import Image as PilImage
 
 import utils.store as store
-from configs.streamdiffusion import speed_feature_maps_infos
+from configs.streamdiffusion import speed_feature_maps_infos, latent_feature_maps_info
 from core.generators.stream_diffusion.utis import StreamDiffusionWrapper
 from core.generators.utils import create_direction_vector, has_passed
 from core.transformations.geometric_transformations import transform_3D, transform_2D
@@ -18,6 +18,7 @@ from data_models import Transform2DArgs, Transform3DArgs, StreamDiffusionStore, 
 from utils import list_files
 from utils.utils import init_feature_map_info_dict
 
+device = store.config.backend.device
 
 class StreamDiffuser:
     def __init__(self,
@@ -36,6 +37,7 @@ class StreamDiffuser:
                  similar_image_filter_threshold: float = 0.98,
                  t_index_list=[32, 49], frame_buffer_size=1, warmup=10,  model="img2img", output_type='pil'):
         self.speed_feature_dict: Dict[str, FeatureMapInfo] = init_feature_map_info_dict(speed_feature_maps_infos)
+        self.latent_feature_dict: Dict[str, FeatureMapInfo] = init_feature_map_info_dict(latent_feature_maps_info)
         self.image_dir = image_dir
         self.img_file_list: Union[List[str]] = list_files(image_dir)
         self.prompt = prompt
@@ -64,22 +66,11 @@ class StreamDiffuser:
         self._init()
 
     def _init(self):
-        self.fill_store()
+        self._fill_store()
         self._prepare()
         self._warmup()
 
-    def _prepare(self):
-        self.stream.prepare(
-            prompt=self.prompt,
-            negative_prompt=self.negative_prompt,
-            num_inference_steps=50,
-        )
-
-    def _warmup(self):
-        for _ in range(self.stream.batch_size - 1):
-            self.stream.latent2img(latent=self.store.image_latent_start)
-
-    def fill_store(self):
+    def _fill_store(self):
         index_word = {
             0: "start",
             1: "target",
@@ -102,24 +93,32 @@ class StreamDiffuser:
                 self.store.image_interpolate_latent = image_latent
 
         self.store.direction_vector = create_direction_vector(self.store.image_latent_start, self.store.image_latent_target)
-        self.mini_mod = torch.from_numpy(
-            np.random.choice([-1, 1], size=image_latent.shape)
-        ).to("cuda")
+        self.store.latent_direction = torch.from_numpy(np.random.choice([-1, 1], size=image_latent.shape)).to(device)
+
+    def _prepare(self):
+        self.stream.prepare(
+            prompt=self.prompt,
+            negative_prompt=self.negative_prompt,
+            num_inference_steps=50,
+        )
+
+    def _warmup(self):
+        for _ in range(self.stream.batch_size - 1):
+            self.stream.latent2img(latent=self.store.image_latent_start)
+
     def routine(self, index: int, scale: int = 2, transform_args: Union[Transform2DArgs, Transform3DArgs, None] = None) -> PilImage:
         speed = self._calculate_speed_value(index=index)
         interpolate_latent: torch.Tensor = self.store.image_interpolate_latent
-        interpolate_latent_copy = copy.deepcopy(interpolate_latent)
-        #ti = 3
-        #interpolate_latent_copy[:, ti] = interpolate_latent[:, ti] + self.mini_mod[:, ti] * store.audio_features["drums"]["rms"][index] * 3
-        #interpolate_latent_copy[:, 0] = interpolate_latent[:, 0] + self.mini_mod[:, 0] * store.audio_features["vocals"]["rms"][index] * 3
-        #interpolate_latent_copy[:, 1] = interpolate_latent[:, 1] + self.mini_mod[:, 1] * store.audio_features["other"]["rms"][index] * 3
         direction_vector: torch.Tensor = self.store.direction_vector
         target_latent: torch.Tensor = self.store.image_latent_target
         # modify interpolate latent
         interpolate_latent = interpolate_latent + (speed * direction_vector)
         self.store.image_interpolate_latent = interpolate_latent
 
-        image_out = self.stream.latent2img(latent=interpolate_latent)
+        # modify latent
+        modified_latent = self._modify_latents(index, interpolate_latent)
+
+        image_out = self.stream.latent2img(latent=modified_latent)
         # Do transformation if args are given
         if transform_args:
             image_out, _ = self._transform_interpolated_image(image_out, transform_args)
@@ -148,16 +147,6 @@ class StreamDiffuser:
 
         return image_out
 
-    def _transform_interpolated_image(self, image: PilImage, transform_args: Transform3DArgs) -> Tuple[torch.Tensor, torch.Tensor]:
-        args = transform_args.dict()
-        image_tensor: torch.Tensor = self.stream.preprocess_image(image)
-        if isinstance(transform_args, Transform3DArgs):
-            image_tensor: torch.Tensor = transform_3D(image_tensor, **args)
-        else:
-            image_tensor: torch.Tensor = transform_2D(image_tensor, **args)
-        image_latent: torch.Tensor = self.stream.stream.encode_image(image_tensor)
-        return image_tensor, image_latent
-
     def _calculate_speed_value(self, index: int) -> float:
         value = 0
         if store.audio_features:
@@ -171,6 +160,30 @@ class StreamDiffuser:
                     value = value + (feature_value*factor)
         print(value)
         return value
+
+    def _modify_latents(self, index: int, latent: torch.Tensor) -> torch.Tensor:
+        latent_copy = copy.deepcopy(latent)
+        if store.audio_features:
+            for featureMapInfo in self.latent_feature_dict.values():
+                if featureMapInfo.active:
+                    layer_idx: int = featureMapInfo.id
+                    track_name: str = featureMapInfo.track_name
+                    feature_name: str = featureMapInfo.feature_name
+                    factor: float = featureMapInfo.factor
+
+                    feature_value: float = store.audio_features[track_name][feature_name][index]
+                    latent_copy[:, layer_idx] = latent_copy[:, layer_idx] + (self.store.latent_direction[:, layer_idx] * feature_value * factor)
+        return latent_copy
+
+    def _transform_interpolated_image(self, image: PilImage, transform_args: Transform3DArgs) -> Tuple[torch.Tensor, torch.Tensor]:
+        args = transform_args.dict()
+        image_tensor: torch.Tensor = self.stream.preprocess_image(image)
+        if isinstance(transform_args, Transform3DArgs):
+            image_tensor: torch.Tensor = transform_3D(image_tensor, **args)
+        else:
+            image_tensor: torch.Tensor = transform_2D(image_tensor, **args)
+        image_latent: torch.Tensor = self.stream.stream.encode_image(image_tensor)
+        return image_tensor, image_latent
 
     def get_speed_feature_infos(self) -> List[FeatureMapInfo]:
         return list(self.speed_feature_dict.values())
@@ -188,6 +201,15 @@ class StreamDiffuser:
         try:
             feat_id = featureMapInfo.id
             del self.speed_feature_dict[feat_id]
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def modify_latent_feature_dict(self, featureMapInfo: FeatureMapInfo) -> bool:
+        try:
+            feat_id = featureMapInfo.id
+            self.latent_feature_dict[feat_id] = featureMapInfo
             return True
         except Exception as e:
             print(e)

@@ -110,7 +110,6 @@ class StyleGan2Ada:
             ws: torch.Tensor = self.calculate_ws(z=z_interpolate, label=label, truncation_psi=truncation_psi)
             ws = self._modify_ws(index, ws)
 
-
             if transform_args:
                 img = self.calculate_image_with_transformation(ws=ws, target_layer_idx=3, transform_args=transform_args)
             else:

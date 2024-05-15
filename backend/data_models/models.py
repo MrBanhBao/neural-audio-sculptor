@@ -251,7 +251,7 @@ class SelectedAudioTrack(BaseModel):
 
 
 class FeatureMapInfo(BaseModel):
-    id: str
+    id: Union[str, int]
     active: bool
     track_name: str
     feature_name: str
@@ -259,7 +259,7 @@ class FeatureMapInfo(BaseModel):
 
     @classmethod
     def init(
-        cls, id: str, active: bool, track_name: str, feature_name: str, factor: float
+        cls, id: Union[str, int], active: bool, track_name: str, feature_name: str, factor: float
     ):
         return cls(
             id=id,
@@ -289,3 +289,4 @@ class StreamDiffusionStore(BaseModel):
     image_interpolate_latent: Union[torch.Tensor, None] = None
 
     direction_vector: Union[torch.Tensor, None] = None
+    latent_direction: Union[torch.Tensor, None] = None
