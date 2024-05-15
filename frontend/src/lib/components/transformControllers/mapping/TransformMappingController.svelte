@@ -2,7 +2,7 @@
 	import { getTransform3dFeatureInfos, setTransform3dFeatureInfo } from '$lib/apis/api';
 	import { getTrackAndFeatureNames } from '$lib/apis/audio-api';
 	import { onMount } from 'svelte';
-	import FeatureMap from '$lib/components/featureMappingControllers/FeatureMap.svelte';
+	import FeatureMap from '$lib/components/featureMapping/FeatureMap.svelte';
 
 	let transform3DMapInfos: FeatureMapInfo[] = [];
 	let trackNames: string[] = [];
@@ -46,7 +46,7 @@
 				trackOptions={trackNames}
 				featureOptions={featureNames}
 				showId={true}
-				maxFactorValue={1}
+				maxFactorValue={2}
 				stepSize={0.01}
 			></FeatureMap>
 		{/each}

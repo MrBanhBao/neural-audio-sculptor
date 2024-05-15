@@ -2,7 +2,7 @@
 	import { IconTransform, IconTimeline, IconRun } from '@tabler/icons-svelte';
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	import TransformController from '../transformControllers/TransformController.svelte';
-	import FeatureMappingController from '../featureMappingControllers/FeatureMappingController.svelte';
+	import StlyeMappingController from '../featureMapping/StyleMappingController.svelte';
 
 	let tabSet: number = 0;
 </script>
@@ -23,7 +23,7 @@
 		<svelte:fragment slot="panel">
 			<div class="overflow-auto">
 				<div class:hidden={!(tabSet === 0)}>
-					<FeatureMappingController></FeatureMappingController>
+					<StlyeMappingController></StlyeMappingController>
 				</div>
 				<div class:hidden={!(tabSet === 1)}>
 					<TransformController></TransformController>

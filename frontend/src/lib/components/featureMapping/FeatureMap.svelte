@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { setSpeedFeatureInfo } from '$lib/apis/stylegan-api';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
 
 	export let endpointFunction: Function;
