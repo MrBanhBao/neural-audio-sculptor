@@ -8,7 +8,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 import utils.store as store
 from data_models import Folder, Config, Transform2DArgs, Transform3DArgs, FeatureMapInfo, StringValue
-from routers import audio, diffusion, stylegan
+from routers import audio, stream_diffusion, stylegan
 from utils import create_nested_file_structure
 
 app = FastAPI(root_path="/api")
@@ -27,7 +27,7 @@ app.add_middleware(
 )
 
 app.include_router(audio.router)
-app.include_router(diffusion.router)
+app.include_router(stream_diffusion.router)
 app.include_router(stylegan.router)
 
 
@@ -97,13 +97,21 @@ def update_transform_3d_args(args3d: Transform3DArgs) -> JSONResponse:
         print(e)
         return JSONResponse(content="3D args updated failed.", status_code=500)
 
-
-
-
 @app.get("/get/transformation/mode")
 def get_transformation_mode() -> StringValue:
     value = StringValue(value=store.transformation_mode)
     return value
+
+@app.get("/get/args3d/padding-modes")
+def get_padding_modes() -> List[str]:
+    return store.padding_modes
+
+
+@app.post("/set/args3d/padding-mode")
+def set_padding_mode(mode: StringValue):
+    store.mapping_args_3D.padding_mode = mode.value
+    store.manual_args_3D.padding_mode = mode.value
+    return True
 
 
 @app.put("/set/transformation/mode")

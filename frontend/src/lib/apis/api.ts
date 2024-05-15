@@ -87,6 +87,25 @@ export async function getTransformationMode() {
     return response;
 }
 
+export async function getPaddingModes() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/args3d/padding-modes`);
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
+export async function setPaddingMode(mode: StringValue) {
+    const response = await fetch(`http://${HOST}:${PORT}/set/args3d/padding-mode`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mode)
+    });
+
+    return response;
+}
+
 export async function setTransformationMode(mode: StringValue) {
     const response = await fetch(`http://${HOST}:${PORT}/api/set/transformation/mode`, {
         method: 'PUT',

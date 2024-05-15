@@ -265,3 +265,4 @@ pyrightconfig.json
 
 pretrained_models
 libs/*
+engines

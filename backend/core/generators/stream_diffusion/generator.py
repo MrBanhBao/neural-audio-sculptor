@@ -61,9 +61,9 @@ class StreamDiffuser:
         self._init()
 
     def _init(self):
+        self.fill_store()
         self._prepare()
         self._warmup()
-        self.fill_store()
 
     def _prepare(self):
         self.stream.prepare(
@@ -74,13 +74,13 @@ class StreamDiffuser:
 
     def _warmup(self):
         for _ in range(self.stream.batch_size - 1):
-            self.stream.latent2img(latent=self.store.stream_diffusion.image_latent_1)
+            self.stream.latent2img(latent=self.store.image_latent_start)
 
     def fill_store(self):
         index_word = {
             0: "start",
             1: "target",
-            3: "next"
+            2: "next"
         }
 
         random_img_files = random.sample(self.img_file_list, 3)
@@ -95,10 +95,10 @@ class StreamDiffuser:
             setattr(self.store, f'image_latent_{index_word[i]}', image_latent)
 
             if i == 0:
-                self.store.interpolate_pil = image_pil
-                self.store.interpolate_latent = image_latent
+                self.store.image_interpolate_pil = image_pil
+                self.store.image_interpolate_latent = image_latent
 
-        self.store.direction_vector = create_direction_vector(self.store.image_latent_start, self.store.image_latent_targe)
+        self.store.direction_vector = create_direction_vector(self.store.image_latent_start, self.store.image_latent_target)
 
     def routine(self, index: int, scale: int = 2, transform_args: Union[Transform2DArgs, Transform3DArgs, None] = None) -> PilImage:
         speed = self._calculate_speed_value(index=index)

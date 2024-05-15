@@ -283,7 +283,7 @@ class StreamDiffusionStore(BaseModel):
     image_latent_target: Union[torch.Tensor, None] = None
 
     image_pil_next: Union[PilImage, None] = None
-    image_latent_next = Union[torch.Tensor, None] = None
+    image_latent_next: Union[torch.Tensor, None] = None
 
     image_interpolate_pil: Union[torch.Tensor, None] = None
     image_interpolate_latent: Union[torch.Tensor, None] = None

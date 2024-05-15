@@ -5,15 +5,17 @@ backend:
   cache_dir: '/home/hao/Workspace/neural-audio-sculptor/backend/.cache'
   music_dir: '/home/hao/Music/deemix Music'
   stylegan_checkpoints: '/home/hao/Documents/stylegan2_models'
-  #stream_diffusion:
-  #  image_dir: '/home/hao/Testspace/StreamDiffusion/examples/mymy/inputs/photo-real'
-  #  model_id: 'JamesFlare/pastel-mix'
 
 frontend:
   host: localhost
   port: 5173
+
 audio:
   sample_rate: 44100
   block_size: 512
   hop_length: 512
   frame_length: 512
+
+stream_diffusion:
+    image_dir: '/home/hao/Testspace/StreamDiffusion/examples/mymy/inputs/photo-real'
+    model_id: 'JamesFlare/pastel-mix'

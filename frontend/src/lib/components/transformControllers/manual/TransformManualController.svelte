@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import TransformManualSlider from './TransformManualSlider.svelte';
 
+	export let paddingMode: string;
 	let args3d: Transform3DArgs;
 
 	async function get3dArgs() {
@@ -16,6 +17,7 @@
 	});
 
 	async function onChange(e) {
+		args3d.padding_mode = paddingMode;
 		const response = await setTransformManual3dArgs(args3d);
 		const data = await response.json();
 		console.log(data);

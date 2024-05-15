@@ -22,6 +22,7 @@ mapping_args_3D = Transform3DArgs()
 
 transform_3d_mapping_dict: Dict[str, FeatureMapInfo] = init_feature_map_info_dict(mappings_3d_infos)
 transformation_mode: Literal['mapping', 'manual'] = "mapping"
+padding_modes: List[str] = ['border', 'zeros', 'reflection']
 
 # audio
 track_names = ["main", "vocals", "drums", "bass", "piano", "other"]
