@@ -49,9 +49,9 @@ def generate_image():
     # update args_3D
     if store.transformation_mode == "mapping":
         feat_args3d = set_transform3d_maps(index=index,
-                                          args=store.mapping_args_3D,
-                                          map_infos=list(store.transform_3d_mapping_dict.values()),
-                                          feature_dict=store.audio_features)
+                                           args=store.mapping_args_3D,
+                                           map_infos=list(store.transform_3d_mapping_dict.values()),
+                                           feature_dict=store.audio_features)
     else:
         feat_args3d = store.manual_args_3D
 
@@ -67,9 +67,8 @@ async def run_routine(websocket: WebSocket):
             if audio_player.playback_state.play:
                 img_byte: bytes = await run_blocking_function()
                 await websocket.send_bytes(img_byte)
-                # await asyncio.sleep(0)
             else:
-                # release routine when nothing is happening
+                # release coroutine when nothing is happening
                 await asyncio.sleep(0)
     except WebSocketDisconnect:
         print("Client disconnected")

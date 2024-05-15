@@ -4,7 +4,7 @@ from typing import Union, List, Literal
 import numpy as np
 import torch
 import yaml
-from PIL.Image import Image
+from PIL.Image import Image as PilImage
 from pydantic import BaseModel
 
 from core.generators.utils import create_direction_vector
@@ -276,13 +276,13 @@ class StreamDiffusionStore(BaseModel):
 
     sampled_file_names: deque = None
 
-    image_pil_start: Union[Image, None] = None
+    image_pil_start: Union[PilImage, None] = None
     image_latent_start: Union[torch.Tensor, None] = None
 
-    image_pil_target: Union[Image, None] = None
+    image_pil_target: Union[PilImage, None] = None
     image_latent_target: Union[torch.Tensor, None] = None
 
-    image_pil_next: Union[Image, None] = None
+    image_pil_next: Union[PilImage, None] = None
     image_latent_next = Union[torch.Tensor, None] = None
 
     image_interpolate_pil: Union[torch.Tensor, None] = None

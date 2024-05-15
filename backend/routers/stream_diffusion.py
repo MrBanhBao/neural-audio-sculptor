@@ -1,11 +1,68 @@
-from fastapi import APIRouter
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+from typing import List
+
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+
+import utils.store as store
+from core.generators.stream_diffusion import StreamDiffuser
+from data_models import FeatureMapInfo
+from routers.audio import audio_player
+from utils import img_pil_to_bytes, set_transform3d_maps
 
 router = APIRouter(
     prefix="/diffusion",
     tags=["diffusion"],
 )
 
+image_dir = "/home/hao/Testspace/StreamDiffusion/examples/mymy/inputs/photo-real"
+generator = StreamDiffuser(image_dir)
+hop_length = store.config.audio.hop_length
 
+executor = ThreadPoolExecutor()
 @router.get("/")
 async def root():
-    return "Hello from the Diffusion API."
+    return "Hello from the StreamDiffusion API."
+
+
+async def run_blocking_function():
+    loop = asyncio.get_event_loop()
+    result = await loop.run_in_executor(executor, generate_image)
+    return result
+
+
+def generate_image():
+    index = int(audio_player.current_frame / hop_length)
+
+    # update args_3D
+    if store.transformation_mode == "mapping":
+        feat_args3d = set_transform3d_maps(index=index,
+                                           args=store.mapping_args_3D,
+                                           map_infos=list(store.transform_3d_mapping_dict.values()),
+                                           feature_dict=store.audio_features)
+    else:
+        feat_args3d = store.manual_args_3D
+
+    img_array = generator.routine(index=index, transform_args=feat_args3d)
+    img_byte: bytes = img_pil_to_bytes(img_array)
+    return img_byte
+
+
+@router.websocket("/ws/routine")
+async def run_routine(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            if audio_player.playback_state.play:
+                img_byte: bytes = await run_blocking_function()
+                await websocket.send_bytes(img_byte)
+            else:
+                # release coroutine when nothing is happening
+                await asyncio.sleep(0)
+    except WebSocketDisconnect:
+        print("Client disconnected")
+
+
+@router.get("/get/speed/feature-mapping")
+async def get_speed_feature_infos() -> List[FeatureMapInfo]:
+    return generator.get_speed_feature_infos()

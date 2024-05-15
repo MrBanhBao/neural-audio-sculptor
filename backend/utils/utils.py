@@ -6,6 +6,7 @@ from typing import List, Union, Dict
 import numpy as np
 import torch
 from PIL import Image
+from PIL.Image import Image as PilImage
 from numpy import typing as npt
 
 from data_models import File, Folder, Transform3DArgs, FeatureMapInfo
@@ -141,6 +142,12 @@ def img_array_to_image_byte_pil(img_array: torch.Tensor, format: str = "JPEG") -
         img_bytes = buf.getvalue()
         return img_bytes
 
+
+def img_pil_to_bytes(img: PilImage, format: str = "JPEG") -> bytes:
+    with io.BytesIO() as buf:
+        img.save(buf, format=format)
+        img_bytes = buf.getvalue()
+        return img_bytes
 
 def init_feature_map_info_dict(feature_infos: List[FeatureMapInfo]) -> Dict[str, FeatureMapInfo]:
     feature_maps_info = {}
