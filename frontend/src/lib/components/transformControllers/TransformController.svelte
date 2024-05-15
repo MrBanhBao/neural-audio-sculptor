@@ -47,7 +47,7 @@
 <div class="card flex flex-col p-4">
 	<div class="flex flex-row items-center">
 		<div class="mb-2 mt-2 pr-8">
-			<label>Padding mode:</label>
+			<label>Transformation mode:</label>
 			<RadioGroup
 				class="w-[215px] rounded-full"
 				hover="hover:variant-soft-primary"

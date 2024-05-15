@@ -32,3 +32,7 @@ audio_features: Dict[str, Dict[str, List[float]]] = {}
 
 # torch
 device = torch.device("cuda" if (torch.cuda.is_available()) else "cpu")
+
+
+generators = ["StyleGan", "StreamDiffusion"]
+current_generator: Literal["StyleGan", "StreamDiffusion"] = "StyleGan"

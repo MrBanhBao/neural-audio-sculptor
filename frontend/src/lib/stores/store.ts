@@ -5,4 +5,4 @@ export const audioMetaData = writable({} as AudioMetaData);
 export const currentFrame = writable(0)
 export const isPlaying = writable(false);
 export const statusFeedback = writable({ status: "idle", message: "" } as StatusFeedback);
-export const args3D = writable({} as Transform3DArgs)
+export const currentGenerator = writable("StyleGan");

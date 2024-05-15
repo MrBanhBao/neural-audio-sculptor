@@ -135,5 +135,18 @@ def modify_3d_transform_feature_infos(featureMapInfo: FeatureMapInfo):
         return JSONResponse(content="Failed 3d transform feature mapping successfully.", status_code=500)
 
 
+@app.get("/get/generator-options")
+def get_generator_options() -> List[str]:
+    return store.generators
+
+@app.get("/get/current-generator")
+def get_current_generator() -> StringValue:
+    return StringValue(value=store.current_generator)
+
+@app.post("/set/current-generator")
+def set_current_generator(mode: StringValue):
+    store.current_generator = mode.value
+    return True
+
 if __name__ == "__main__":
     uvicorn.run(app, host=store.config.backend.host, port=store.config.backend.port)

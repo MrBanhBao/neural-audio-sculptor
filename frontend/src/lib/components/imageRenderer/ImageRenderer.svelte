@@ -1,21 +1,24 @@
 <script lang="ts">
-	import { wsRoutineUrl } from '$lib/apis/stylegan-api';
+	import { wsRoutineUrl as wsStyleGanUrl } from '$lib/apis/stylegan-api';
+	import { wsRoutineUrl as wsStreamDiffsuionUrl } from '$lib/apis/stream-diffusion-api';
+
 	import { onMount, onDestroy } from 'svelte';
 	import { IconPaint, IconWindowMaximize } from '@tabler/icons-svelte';
 	import Modal from '../utils/Modal.svelte';
 	import Finder from '$lib/components/finder/Finder.svelte';
 	import { loadModelFile } from '$lib/apis/stylegan-api';
-	import { statusFeedback } from '$lib/stores/store';
+	import { statusFeedback, currentGenerator } from '$lib/stores/store';
 
 	let ws: WebSocket;
 	let isConnected = false;
 	let winRef: Window | null = null;
 	let imgSrc: string = '/images/img-placeholder.jpg';
+	let url: str = wsStyleGanUrl;
 
 	let showModal = false;
 
 	function connectWebSocket() {
-		ws = new WebSocket(wsRoutineUrl);
+		ws = new WebSocket(url);
 
 		ws.binaryType = 'arraybuffer'; // Specify that binary data will be received as ArrayBuffer
 
@@ -103,16 +106,31 @@
 			statusFeedback.set({ status: 'failed', message: response.statusText });
 		}
 	}
+
+	currentGenerator.subscribe((generator) => {
+		if (ws) {
+			if (generator === 'StyleGan') {
+				url = wsStyleGanUrl;
+				disconnectWebSocket();
+				connectWebSocket();
+			} else if (generator === 'StreamDiffusion') {
+				url = wsStreamDiffsuionUrl;
+				disconnectWebSocket();
+				connectWebSocket();
+			}
+			console.log(generator);
+		}
+	});
 </script>
 
 <div class="card min-w-[400px] max-w-[400px] p-4">
 	<div class="mb-2">
 		<img width="360" src={imgSrc} alt="generated for music viz." />
 	</div>
-	<div>
+	<div class="mr-4 flex justify-end">
 		<button
 			type="button"
-			class="btn-m variant-filled-primary btn btn-md rounded-full"
+			class="btn-m variant-filled-primary btn btn-md mr-4 rounded-full"
 			on:click={() => (showModal = true)}
 		>
 			<span><IconPaint /></span>

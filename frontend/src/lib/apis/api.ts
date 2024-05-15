@@ -160,3 +160,37 @@ export async function setTransform3dFeatureInfo(info: FeatureMapInfo) {
 
     return response;
 }
+
+
+export async function getGeneratorOptions() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/generator-options`);
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
+export async function getCurrentGenerator() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/current-generator`);
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
+
+export async function setCurrentGenerator(info: StringValue) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/set/current-generator`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(info)
+    });
+
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}

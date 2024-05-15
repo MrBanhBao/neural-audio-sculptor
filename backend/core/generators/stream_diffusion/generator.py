@@ -1,7 +1,10 @@
+import copy
 import os
 import random
+from collections import deque
 from typing import Literal, Optional, Dict, Tuple, List, Union
 
+import numpy as np
 import torch
 from PIL import Image
 from PIL.Image import Image as PilImage
@@ -84,7 +87,7 @@ class StreamDiffuser:
         }
 
         random_img_files = random.sample(self.img_file_list, 3)
-        self.store.sampled_file_names = random_img_files
+        self.store.sampled_file_names = deque(random_img_files)
 
         for i, file in enumerate(random_img_files):
             image_pil: PilImage = Image.open(os.path.join(self.image_dir, file))
@@ -99,29 +102,38 @@ class StreamDiffuser:
                 self.store.image_interpolate_latent = image_latent
 
         self.store.direction_vector = create_direction_vector(self.store.image_latent_start, self.store.image_latent_target)
-
+        self.mini_mod = torch.from_numpy(
+            np.random.choice([-1, 1], size=image_latent.shape)
+        ).to("cuda")
     def routine(self, index: int, scale: int = 2, transform_args: Union[Transform2DArgs, Transform3DArgs, None] = None) -> PilImage:
         speed = self._calculate_speed_value(index=index)
         interpolate_latent: torch.Tensor = self.store.image_interpolate_latent
+        interpolate_latent_copy = copy.deepcopy(interpolate_latent)
+        #ti = 3
+        #interpolate_latent_copy[:, ti] = interpolate_latent[:, ti] + self.mini_mod[:, ti] * store.audio_features["drums"]["rms"][index] * 3
+        #interpolate_latent_copy[:, 0] = interpolate_latent[:, 0] + self.mini_mod[:, 0] * store.audio_features["vocals"]["rms"][index] * 3
+        #interpolate_latent_copy[:, 1] = interpolate_latent[:, 1] + self.mini_mod[:, 1] * store.audio_features["other"]["rms"][index] * 3
         direction_vector: torch.Tensor = self.store.direction_vector
         target_latent: torch.Tensor = self.store.image_latent_target
         # modify interpolate latent
         interpolate_latent = interpolate_latent + (speed * direction_vector)
+        self.store.image_interpolate_latent = interpolate_latent
 
         image_out = self.stream.latent2img(latent=interpolate_latent)
         # Do transformation if args are given
         if transform_args:
-            image_out = self._transform_interpolated_image(image_out, transform_args)
+            image_out, _ = self._transform_interpolated_image(image_out, transform_args)
         image_out = self.stream.postprocess_image(image_out)
         image_out = image_out.resize((self.stream.width*scale, self.stream.height*scale), Image.Resampling.LANCZOS)
 
         if has_passed(interpolate_latent, target_latent, direction_vector):
+            print("paased")
             self.store.image_pil_start = self.store.image_latent_target
             self.store.image_latent_start = self.store.image_latent_target
 
             # get new image file
             random_image_file = random.sample(self.img_file_list, 1)[0]
-            while random_image_file in self.store.file_names:
+            while random_image_file in self.store.sampled_file_names:
                 print('resampling!!!!!!!!!!!!!!')
                 random_image_file = random.sample(self.img_file_list, 1)[0]
             self.store.sampled_file_names.append(random_image_file) # add random image file
@@ -132,7 +144,7 @@ class StreamDiffuser:
             self.store.image_pil_target = image_pil
             self.store.image_latent_target = image_latent
 
-            self.store.direction_vector = create_direction_vector(self.store.image_latent_start, self.store.image_latent_targe)
+            self.store.direction_vector = create_direction_vector(self.store.image_latent_start, self.store.image_latent_target)
 
         return image_out
 
@@ -157,6 +169,7 @@ class StreamDiffuser:
 
                     feature_value = store.audio_features[track_name][feature_name][index]
                     value = value + (feature_value*factor)
+        print(value)
         return value
 
     def get_speed_feature_infos(self) -> List[FeatureMapInfo]:

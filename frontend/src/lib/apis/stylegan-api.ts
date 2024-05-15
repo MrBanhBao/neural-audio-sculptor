@@ -3,7 +3,7 @@ const PORT: number | unknown = 8000;
 
 const webSocketUrl = `ws://${HOST}:${PORT}`
 
-export const wsRoutineUrl = `${webSocketUrl}/api/diffusion/ws/routine`
+export const wsRoutineUrl = `${webSocketUrl}/api/stylegan/ws/routine`
 
 
 export async function loadModelFile(path: StringValue) {
