@@ -150,7 +150,7 @@ class StyleGan2Ada:
                     factor: float = featureMapInfo.factor
 
                     ws_indices: List[int] = ws_name_indices_mapping[feature_info_id]
-                    feature_value: float = store.audio_features[track_name][feature_name][index]
+                    feature_value: float = store.audio_features[track_name][feature_name][index+1] - store.audio_features[track_name][feature_name][index]
 
                     ws[:, ws_indices] = ws[:, ws_indices] + (self.store.ws_direction[:, ws_indices] * feature_value * factor)
         return ws

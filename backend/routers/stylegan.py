@@ -48,13 +48,13 @@ def generate_image():
     index = int(audio_player.current_frame / hop_length)
 
     # update args_3D
-    if store.transformation_mode == "mapping":
-        feat_args3d = set_transform3d_maps(index=index,
-                                           args=store.mapping_args_3D,
-                                           map_infos=list(store.transform_3d_mapping_dict.values()),
-                                           feature_dict=store.audio_features)
-    else:
-        feat_args3d = store.manual_args_3D
+    #if store.transformation_mode == "mapping":
+    feat_args3d = set_transform3d_maps(index=index,
+                                       args=store.manual_args_3D,
+                                       map_infos=list(store.transform_3d_mapping_dict.values()),
+                                       feature_dict=store.audio_features)
+    #else:
+    #feat_args3d = store.manual_args_3D
 
     img_array = generator.routine(index=index, transform_args=feat_args3d)
     img_byte: bytes = img_array_to_image_byte_pil(img_array)

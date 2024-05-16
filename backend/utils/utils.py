@@ -1,3 +1,4 @@
+import copy
 import io
 import json
 import os
@@ -159,15 +160,16 @@ def init_feature_map_info_dict(feature_infos: List[FeatureMapInfo]) -> Dict[str,
 def set_transform3d_maps(index: int, args:Transform3DArgs,
                          map_infos: List[FeatureMapInfo],
                          feature_dict: Dict[str, Dict[str, List[float]]]):
+    args_copy = copy.deepcopy(args)
     for map_info in map_infos:
         feat_id: str = map_info.id
         track_name: str = map_info.track_name
         feature_name: str = map_info.feature_name
         factor: float = map_info.factor
-        feature_value: float = feature_dict[track_name][feature_name][index]
-        value = feature_value * factor # TODO: HERE!!!!!!!!!!!
+        feature_value: float = feature_dict[track_name][feature_name][index+1] - feature_dict[track_name][feature_name][index]
+        value = feature_value * factor
         if map_info.active:
-            setattr(args, feat_id, value)
+            setattr(args_copy, feat_id, getattr(args_copy, feat_id) + value)
         else:
-            setattr(args, feat_id, 0)
-    return args
+            setattr(args_copy, feat_id, getattr(args_copy, feat_id))
+    return args_copy

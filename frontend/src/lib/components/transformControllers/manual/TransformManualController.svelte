@@ -22,14 +22,36 @@
 		const data = await response.json();
 		console.log(data);
 	}
+
+	async function reset3dArgs() {
+		const neutral3dArgs = {
+			padding_mode: paddingMode,
+			rotate_x: 0,
+			rotate_y: 0,
+			rotate_z: 0,
+			translate_x: 0,
+			translate_y: 0,
+			translate_z: 0
+		} as Transform3DArgs;
+
+		const response = await setTransformManual3dArgs(neutral3dArgs);
+		if (response.ok) {
+			args3d = neutral3dArgs;
+		} else {
+			console.log(response);
+		}
+	}
 </script>
 
 {#if args3d}
 	<table class="table table-hover">
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Value</th>
+				<th class="centered">Name</th>
+				<th class="">Value</th>
+				<th class="centered">
+					<button type="button" class="variant-filled btn" on:click={reset3dArgs}>Reset All</button>
+				</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -84,3 +106,10 @@
 		</tbody>
 	</table>
 {/if}
+
+<style>
+	.centered {
+		text-align: center;
+		vertical-align: middle;
+	}
+</style>

@@ -171,7 +171,7 @@ class StreamDiffuser:
                     feature_name: str = featureMapInfo.feature_name
                     factor: float = featureMapInfo.factor
 
-                    feature_value: float = store.audio_features[track_name][feature_name][index]
+                    feature_value: float = store.audio_features[track_name][feature_name][index+1] - store.audio_features[track_name][feature_name][index]
                     latent_copy[:, layer_idx] = latent_copy[:, layer_idx] + (self.store.latent_direction[:, layer_idx] * feature_value * factor)
         return latent_copy
 

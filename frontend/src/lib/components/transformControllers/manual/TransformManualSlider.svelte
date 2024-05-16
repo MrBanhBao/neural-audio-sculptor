@@ -22,6 +22,16 @@
 			<span>{value}</span>
 		</div>
 	</td>
+	<td class="centered">
+		<button
+			type="button"
+			class="variant-filled btn"
+			on:click={() => {
+				value = 0;
+				onChange(value);
+			}}>Reset</button
+		>
+	</td>
 </tr>
 
 <style>
