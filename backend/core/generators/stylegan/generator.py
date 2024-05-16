@@ -13,7 +13,7 @@ from core.transformations.geometric_transformations import transform_3D, transfo
 from data_models import FeatureMapInfo, StyleGanStore, Transform3DArgs, Transform2DArgs
 from utils.utils import init_feature_map_info_dict
 
-sys.path.insert(0, os.path.abspath("../backend/libs/stylegan3"))
+sys.path.insert(0, os.path.abspath("../backend/libs/stylegan2-ada-pytorch"))
 
 class StyleGan2Ada:
     def __init__(self, model_file: str, device: str = None) -> None:

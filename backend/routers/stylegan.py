@@ -1,4 +1,5 @@
 import asyncio
+import os
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
@@ -17,7 +18,7 @@ router = APIRouter(
 )
 
 
-model_file = "/home/hao/Documents/stylegan2_models/VisionaryArt.pkl"
+model_file = os.path.join(store.config.backend.stylegan_checkpoints, "VisionaryArt.pkl")
 generator = StyleGan2Ada(model_file=model_file, device=None)
 hop_length = store.config.audio.hop_length
 
