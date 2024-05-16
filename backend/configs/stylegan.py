@@ -146,7 +146,7 @@ list2step = [
     FeatureMapInfo(id="ws1-2", active=False, track_name="drums", feature_name="rms", factor=3),
     FeatureMapInfo(id="ws3-4", active=True, track_name="bass", feature_name="rms", factor=3),
     FeatureMapInfo(id="ws5-6", active=False, track_name="other", feature_name="rms", factor=3),
-    FeatureMapInfo(id="ws7-8", active=False, t1rack_name="bass", feature_name="rms", factor=3),
+    FeatureMapInfo(id="ws7-8", active=False, track_name="bass", feature_name="rms", factor=3),
     FeatureMapInfo(id="ws9-10", active=False, track_name="piano", feature_name="rms", factor=3),
     FeatureMapInfo(id="ws11-12", active=False, track_name="drums", feature_name="rms", factor=3),
     FeatureMapInfo(id="ws13-14", active=True, track_name="drums", feature_name="rms", factor=3),

@@ -77,7 +77,7 @@ class StreamDiffuser:
             2: "next"
         }
 
-        random_img_files = random.sample(self.img_file_list, 3)
+        random_img_files = random.sample(self.img_file_list, 2)
         self.store.sampled_file_names = deque(random_img_files)
 
         for i, file in enumerate(random_img_files):

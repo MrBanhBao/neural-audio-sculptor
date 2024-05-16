@@ -47,7 +47,7 @@
 				featureOptions={featureNames}
 				showId={true}
 				maxFactorValue={2}
-				stepSize={0.01}
+				stepSize={0.001}
 			></FeatureMap>
 		{/each}
 	</tbody>

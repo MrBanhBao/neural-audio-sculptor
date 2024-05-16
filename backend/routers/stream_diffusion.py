@@ -16,7 +16,7 @@ router = APIRouter(
     tags=["diffusion"],
 )
 
-image_dir = "/home/hao/Testspace/StreamDiffusion/examples/mymy/inputs/photo-real"
+image_dir = '/home/hao/Downloads/00000'
 generator = StreamDiffuser(image_dir)
 hop_length = store.config.audio.hop_length
 
