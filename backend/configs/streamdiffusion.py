@@ -52,28 +52,28 @@ latent_feature_maps_info: List[FeatureMapInfo] = [
         FeatureMapInfo.init(
             id=0,
             active=True,
-            track_name="drums",
+            track_name="bass",
             feature_name="rms",
             factor=2
         ),
         FeatureMapInfo.init(
             id=1,
             active=False,
-            track_name="other",
+            track_name="vocals",
             feature_name="rms",
             factor=1.2
         ),
         FeatureMapInfo.init(
             id=2,
-            active=False,
-            track_name="vocals",
+            active=True,
+            track_name="drums",
             feature_name="rms",
             factor=1.2
         ),
         FeatureMapInfo.init(
             id=3,
             active=False,
-            track_name="bass",
+            track_name="vocals",
             feature_name="rms",
             factor=1.2
         )

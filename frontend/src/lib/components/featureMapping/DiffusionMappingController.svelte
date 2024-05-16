@@ -33,8 +33,8 @@
 		columnNames={['Active', 'Track', 'Feature', 'Factor']}
 		{trackNames}
 		{featureNames}
-		maxFactorValue={10}
-		stepSize={0.01}
+		maxFactorValue={100}
+		stepSize={1}
 		showId={false}
 	></FeatureMapper>
 
@@ -45,8 +45,8 @@
 		columnNames={['Name', 'Active', 'Track', 'Feature', 'Factor']}
 		{trackNames}
 		{featureNames}
-		maxFactorValue={10}
-		stepSize={0.01}
+		maxFactorValue={5}
+		stepSize={0.001}
 		showId={true}
 	></FeatureMapper>
 </div>
