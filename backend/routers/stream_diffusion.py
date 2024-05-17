@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 import utils.store as store
 from core.generators.stream_diffusion import StreamDiffuser
-from data_models import FeatureMapInfo
+from data_models import FeatureMapInfo, StringValue
 from routers.audio import audio_player
 from utils import img_pil_to_bytes, set_transform3d_maps
 
@@ -92,5 +92,22 @@ async def modify_latent_feature_dict(featureMapInfo: FeatureMapInfo) -> JSONResp
             return JSONResponse(status_code=200, content=f"Successfully modified feature mapping.")
         else:
             return JSONResponse(status_code=500, content=f"Failed modifying feature mapping.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/get/prompt")
+async def get_prompt() -> StringValue:
+    return StringValue(value=generator.store.prompt)
+
+
+@router.post("/set/prompt")
+async def set_prompt(prompt: StringValue) -> JSONResponse:
+    try:
+        success = generator.set_prompt(prompt.value)
+        if success:
+            return JSONResponse(status_code=200, content=f"Successfully setting prompt.")
+        else:
+            return JSONResponse(status_code=500, content=f"Failed setting prompt.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

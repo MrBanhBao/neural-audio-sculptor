@@ -1,7 +1,10 @@
+import base64
 import copy
+import io
 from typing import List
 
 import uvicorn
+from PIL import Image
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -147,6 +150,20 @@ def get_current_generator() -> StringValue:
 def set_current_generator(mode: StringValue):
     store.current_generator = mode.value
     return True
+
+
+@app.post("/get/pose")
+def estimate_pose(data: StringValue):
+        # Decode base64 image
+        #print(data)
+        image_data = base64.b64decode(data.value.split(",")[1])
+        image = Image.open(io.BytesIO(image_data))
+        image.show()
+        # Process the image (for example, convert to grayscale)
+        #processed_image = ImageOps.grayscale(image)
+
+        #return {"processed_image": f"data:image/png;base64,{processed_image_base64}"}
+        return True
 
 if __name__ == "__main__":
     uvicorn.run(app, host=store.config.backend.host, port=store.config.backend.port)

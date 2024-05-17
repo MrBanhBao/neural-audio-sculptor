@@ -3,7 +3,7 @@
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	import AudioTracker from '$lib/components/audioTracker/AudioTracker.svelte';
 	import FeatureTracker from '$lib/components/featureTracker/FeatureTracker.svelte';
-
+	import PoseEstimationPanel from '../poseEstimation/PoseEstimationPanel.svelte';
 	let tabSet: number = 0;
 </script>
 
@@ -33,7 +33,9 @@
 				<div class:hidden={!(tabSet === 1)}>
 					<FeatureTracker></FeatureTracker>
 				</div>
-				<div class:hidden={!(tabSet === 2)}>Future Content</div>
+				<div class:hidden={!(tabSet === 2)}>
+					<PoseEstimationPanel></PoseEstimationPanel>
+				</div>
 			</div>
 		</svelte:fragment>
 	</TabGroup>

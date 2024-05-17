@@ -34,7 +34,7 @@
 	}
 
 	onMount(() => {
-		interval = setInterval(updateCurrentFrame, 500);
+		interval = setInterval(updateCurrentFrame, 50);
 	});
 
 	onDestroy(() => {

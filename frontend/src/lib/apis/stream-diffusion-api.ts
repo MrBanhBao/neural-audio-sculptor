@@ -52,3 +52,27 @@ export async function setLatentFeatureInfo(info: FeatureMapInfo) {
 
     return response;
 }
+
+
+export async function getPrompt() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/diffusion/get/prompt`);
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
+export async function setPrompt(prompt: StringValue) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/diffusion/set/prompt`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(prompt)
+    });
+
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}

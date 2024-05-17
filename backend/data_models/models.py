@@ -228,7 +228,7 @@ class AudioMetaData(BaseModel):
 
 
 class StringValue(BaseModel):
-    value: str
+    value: Union[str, None]
 
 
 class FloatValue(BaseModel):
@@ -274,6 +274,7 @@ class StreamDiffusionStore(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
+    prompt: Union[str, None] = None
     sampled_file_names: deque = None
 
     image_pil_start: Union[PilImage, None] = None
@@ -290,3 +291,6 @@ class StreamDiffusionStore(BaseModel):
 
     direction_vector: Union[torch.Tensor, None] = None
     latent_direction: Union[torch.Tensor, None] = None
+
+class ImageData(BaseModel):
+    image: str

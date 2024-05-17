@@ -6,6 +6,7 @@
 	import { IconPaint, IconWindowMaximize } from '@tabler/icons-svelte';
 	import Modal from '../utils/Modal.svelte';
 	import Finder from '$lib/components/finder/Finder.svelte';
+	import PromptHandler from './PromptHandler.svelte';
 	import { loadModelFile } from '$lib/apis/stylegan-api';
 	import { statusFeedback, currentGenerator } from '$lib/stores/store';
 
@@ -16,6 +17,7 @@
 	let url: str = wsStyleGanUrl;
 
 	let showModal = false;
+	let usedGenerator: string;
 
 	function connectWebSocket() {
 		ws = new WebSocket(url);
@@ -113,32 +115,39 @@
 				url = wsStyleGanUrl;
 				disconnectWebSocket();
 				connectWebSocket();
+				usedGenerator = 'StyleGan';
 			} else if (generator === 'StreamDiffusion') {
 				url = wsStreamDiffsuionUrl;
 				disconnectWebSocket();
 				connectWebSocket();
+				usedGenerator = 'StreamDiffusion';
 			}
-			console.log(generator);
 		}
 	});
 </script>
 
 <div class="card min-w-[400px] max-w-[400px] p-4">
-	<div class="mb-2">
-		<img width="360" src={imgSrc} alt="generated for music viz." />
-	</div>
-	<div class="mr-4 flex justify-end">
-		<button
-			type="button"
-			class="btn-m variant-filled-primary btn btn-md mr-4 rounded-full"
-			on:click={() => (showModal = true)}
-		>
-			<span><IconPaint /></span>
-			<span>Load Model</span>
-		</button>
-		<button type="button" class="variant-filled btn-icon" on:click={openImage}
-			><IconWindowMaximize /></button
-		>
+	<div>
+		<div class="mb-2">
+			<img width="360" src={imgSrc} alt="generated for music viz." />
+		</div>
+		<div class="mr-4 flex justify-end">
+			<button
+				type="button"
+				class="btn-m variant-filled-primary btn btn-md mr-4 rounded-full"
+				on:click={() => (showModal = true)}
+			>
+				<span><IconPaint /></span>
+				<span>Load Model</span>
+			</button>
+			<button type="button" class="variant-filled btn-icon" on:click={openImage}
+				><IconWindowMaximize /></button
+			>
+		</div>
+
+		<div class:hidden={!(usedGenerator === 'StreamDiffusion')}>
+			<PromptHandler></PromptHandler>
+		</div>
 	</div>
 </div>
 
@@ -149,3 +158,9 @@
 		{handleResponseFunction}
 	></Finder>
 </Modal>
+
+<style>
+	.hidden {
+		visibility: hidden;
+	}
+</style>

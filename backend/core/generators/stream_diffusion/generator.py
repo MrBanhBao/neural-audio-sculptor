@@ -25,7 +25,7 @@ class StreamDiffuser:
                  image_dir: str,
                  prompt: str = "",
                  negative_prompt: str = "low quality, bad quality, blurry, low resolution",
-                 model_id_or_path: str = "JamesFlare/pastel-mix",
+                 model_id_or_path: str = "stabilityai/sd-turbo",
                  lora_dict: Optional[Dict[str, float]] = None,
                  width: int = 512,
                  height: int = 512,
@@ -35,7 +35,7 @@ class StreamDiffuser:
                  cfg_type: Literal["none", "full", "self", "initialize"] = "none",
                  seed: int = 2,
                  similar_image_filter_threshold: float = 0.98,
-                 t_index_list=[32, 49], frame_buffer_size=1, warmup=10,  model="img2img", output_type='pil'):
+                 t_index_list=[26, 38], frame_buffer_size=1, warmup=10,  model="img2img", output_type='pil'):
         self.speed_feature_dict: Dict[str, FeatureMapInfo] = init_feature_map_info_dict(speed_feature_maps_infos)
         self.latent_feature_dict: Dict[str, FeatureMapInfo] = init_feature_map_info_dict(latent_feature_maps_info)
         self.image_dir = image_dir
@@ -118,7 +118,7 @@ class StreamDiffuser:
         # modify latent
         modified_latent = self._modify_latents(index, interpolate_latent)
 
-        image_out = self.stream.latent2img(latent=modified_latent)
+        image_out = self.stream.latent2img(latent=modified_latent, prompt=self.store.prompt)
         # Do transformation if args are given
         if transform_args:
             image_out, _ = self._transform_interpolated_image(image_out, transform_args)
@@ -226,3 +226,13 @@ class StreamDiffuser:
         except Exception as e:
             print(e)
             return False
+
+    def get_prompt(self):
+        return self.store.prompt
+
+    def set_prompt(self, prompt: str):
+        if prompt == "":
+            self.store.prompt = None
+        else:
+            self.store.prompt = prompt
+        return True
