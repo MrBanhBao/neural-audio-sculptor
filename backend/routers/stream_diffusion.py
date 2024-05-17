@@ -98,7 +98,11 @@ async def modify_latent_feature_dict(featureMapInfo: FeatureMapInfo) -> JSONResp
 
 @router.get("/get/prompt")
 async def get_prompt() -> StringValue:
-    return StringValue(value=generator.store.prompt)
+    if generator.store.prompt is None:
+        value = ""
+    else:
+        value = generator.store.prompt
+    return StringValue(value=value)
 
 
 @router.post("/set/prompt")
@@ -111,3 +115,7 @@ async def set_prompt(prompt: StringValue) -> JSONResponse:
             return JSONResponse(status_code=500, content=f"Failed setting prompt.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/set/imagedir-input")
+async def set_prompt(path: StringValue):
+    generator.set_image_dir(path.value)

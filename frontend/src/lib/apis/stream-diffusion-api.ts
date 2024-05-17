@@ -76,3 +76,13 @@ export async function setPrompt(prompt: StringValue) {
 
     return response;
 }
+
+export async function setImageInputDirectory(path: StringValue) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/diffusion/set/imagedir-input`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(path)
+    })
+
+    return response;
+}

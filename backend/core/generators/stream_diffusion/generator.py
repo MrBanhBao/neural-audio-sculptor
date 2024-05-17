@@ -236,3 +236,7 @@ class StreamDiffuser:
         else:
             self.store.prompt = prompt
         return True
+
+    def set_image_dir(self, image_dir: str):
+        self.image_dir = image_dir
+        self.img_file_list = list_files(image_dir)

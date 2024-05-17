@@ -2,7 +2,7 @@
 	import { getPrompt, setPrompt } from '$lib/apis/stream-diffusion-api';
 	import { onMount } from 'svelte';
 
-	let currentPrompt: string | undefined;
+	let currentPrompt: string = '';
 	let placeholder: string = 'Please enter a prompt.';
 
 	async function fetchPrompt() {
@@ -40,4 +40,4 @@
 		bind:value={currentPrompt}
 	/>
 </label>
-<button class="" on:click={applyPrompt}>Apply</button>
+<button class="variant-filled btn btn-sm" on:click={applyPrompt}>Apply</button>

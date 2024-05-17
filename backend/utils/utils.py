@@ -150,12 +150,14 @@ def img_pil_to_bytes(img: PilImage, format: str = "JPEG") -> bytes:
         img_bytes = buf.getvalue()
         return img_bytes
 
+
 def init_feature_map_info_dict(feature_infos: List[FeatureMapInfo]) -> Dict[str, FeatureMapInfo]:
     feature_maps_info = {}
     for info in feature_infos:
         feature_maps_info[info.id] = info
 
     return feature_maps_info
+
 
 def set_transform3d_maps(index: int, args:Transform3DArgs,
                          map_infos: List[FeatureMapInfo],
@@ -173,3 +175,5 @@ def set_transform3d_maps(index: int, args:Transform3DArgs,
         else:
             setattr(args_copy, feat_id, getattr(args_copy, feat_id))
     return args_copy
+
+

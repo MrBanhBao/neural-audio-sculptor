@@ -9,6 +9,7 @@
 	import PromptHandler from './PromptHandler.svelte';
 	import { loadModelFile } from '$lib/apis/stylegan-api';
 	import { statusFeedback, currentGenerator } from '$lib/stores/store';
+	import ImageInputFinder from '../imageInputs/ImageInputFinder.svelte';
 
 	let ws: WebSocket;
 	let isConnected = false;
@@ -16,8 +17,9 @@
 	let imgSrc: string = '/images/img-placeholder.jpg';
 	let url: str = wsStyleGanUrl;
 
-	let showModal = false;
-	let usedGenerator: string;
+	let showModalStyleGan = false;
+	let showModalStreamDiffusion = false;
+	let usedGenerator: string = 'StyleGan';
 
 	function connectWebSocket() {
 		ws = new WebSocket(url);
@@ -132,14 +134,25 @@
 			<img width="360" src={imgSrc} alt="generated for music viz." />
 		</div>
 		<div class="mr-4 flex justify-end">
-			<button
-				type="button"
-				class="btn-m variant-filled-primary btn btn-md mr-4 rounded-full"
-				on:click={() => (showModal = true)}
-			>
-				<span><IconPaint /></span>
-				<span>Load Model</span>
-			</button>
+			{#if usedGenerator === 'StyleGan'}
+				<button
+					type="button"
+					class="btn-m variant-filled-primary btn btn-md mr-4 rounded-full"
+					on:click={() => (showModalStyleGan = true)}
+				>
+					<span><IconPaint /></span>
+					<span>Load Model</span>
+				</button>
+			{:else if usedGenerator === 'StreamDiffusion'}
+				<button
+					type="button"
+					class="btn-m variant-filled-primary btn btn-md mr-4 rounded-full"
+					on:click={() => (showModalStreamDiffusion = true)}
+				>
+					<span><IconPaint /></span>
+					<span>Choose Inputs</span>
+				</button>
+			{/if}
 			<button type="button" class="variant-filled btn-icon" on:click={openImage}
 				><IconWindowMaximize /></button
 			>
@@ -151,12 +164,16 @@
 	</div>
 </div>
 
-<Modal bind:showModal title="StyleGan Models">
+<Modal bind:showModal={showModalStyleGan} title="StyleGan Models">
 	<Finder
 		configKeyName="stylegan_checkpoints"
 		endpointFunction={loadModelFile}
 		{handleResponseFunction}
 	></Finder>
+</Modal>
+
+<Modal bind:showModal={showModalStreamDiffusion} title="Image Inputs">
+	<ImageInputFinder></ImageInputFinder>
 </Modal>
 
 <style>

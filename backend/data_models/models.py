@@ -292,5 +292,12 @@ class StreamDiffusionStore(BaseModel):
     direction_vector: Union[torch.Tensor, None] = None
     latent_direction: Union[torch.Tensor, None] = None
 
+
 class ImageData(BaseModel):
     image: str
+
+
+class ImageInputsPreviewData(BaseModel):
+    name: str
+    path: str
+    images: List[str]
