@@ -158,7 +158,6 @@ class StreamDiffuser:
 
                     feature_value = store.audio_features[track_name][feature_name][index]
                     value = value + (feature_value*factor)
-        print(value)
         return value
 
     def _modify_latents(self, index: int, latent: torch.Tensor) -> torch.Tensor:

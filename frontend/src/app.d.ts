@@ -108,11 +108,17 @@ type Transform2DArgs = {
 }
 
 type Transform3DArgs = {
-	padding_mode: str;
+	padding_mode: string;
 	rotate_x: float;
 	rotate_y: float;
 	rotate_z: float;
 	translate_x: float;
 	translate_y: float;
 	translate_z: float;
+}
+
+type ImageInputPreviewData = {
+	name: string;
+	path: string;
+	images: string[];
 }

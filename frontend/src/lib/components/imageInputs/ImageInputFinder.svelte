@@ -1,31 +1,24 @@
 <script lang="ts">
-	import { setImageInputDirectory } from '$lib/apis/stream-diffusion-api';
+	import { getImageInputPreviewData } from '$lib/apis/api';
+	import ImageInputPreview from './ImageInputPreview.svelte';
+	import { onMount } from 'svelte';
 
-	async function test1() {
-		let path: string = '/home/hao/Pictures/stream_diffusion/flowers';
-		const response = await setImageInputDirectory({ value: path } as StringValue);
+	let previewData: ImageInputPreview[] = [];
+
+	async function fetchImageInputPreviewData() {
+		const response = await getImageInputPreviewData();
+		const data = await response.json();
+		return data;
 	}
 
-	async function test2() {
-		let path: string = '/home/hao/Pictures/stream_diffusion/nature_pattern';
-		const response = await setImageInputDirectory({ value: path } as StringValue);
-	}
+	onMount(async () => {
+		previewData = await fetchImageInputPreviewData();
+		console.log('dasdasdasd', previewData);
+	});
 </script>
 
-<div>
-	<button
-		type="button"
-		class="btn-m variant-filled-primary btn btn-md mr-4 rounded-full"
-		on:click={test1}
-	>
-		Flower
-	</button>
-
-	<button
-		type="button"
-		class="btn-m variant-filled-primary btn btn-md mr-4 rounded-full"
-		on:click={test2}
-	>
-		Nature
-	</button>
+<div class="flex flex-wrap justify-evenly">
+	{#each previewData as preview}
+		<ImageInputPreview name={preview.name} path={preview.path} imagePaths={preview.images}></ImageInputPreview>
+	{/each}
 </div>

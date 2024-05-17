@@ -1,4 +1,5 @@
 import asyncio
+import os
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
@@ -16,8 +17,11 @@ router = APIRouter(
     tags=["diffusion"],
 )
 
-image_dir = '/home/hao/Downloads/00000'
-generator = StreamDiffuser(image_dir)
+image_dir = os.path.join(store.config.stream_diffusion.image_inputs, "flowers")
+model_id = store.config.stream_diffusion.model_id
+t_index_list = store.config.stream_diffusion.t_index_list
+
+generator = StreamDiffuser(image_dir=image_dir, model_id_or_path=model_id, t_index_list=t_index_list)
 hop_length = store.config.audio.hop_length
 
 executor = ThreadPoolExecutor()

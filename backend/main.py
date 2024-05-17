@@ -4,13 +4,14 @@ from typing import List
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from starlette.middleware.cors import CORSMiddleware
 
 import utils.store as store
-from data_models import Folder, Config, Transform2DArgs, Transform3DArgs, FeatureMapInfo, StringValue
+from data_models import Folder, Config, Transform2DArgs, Transform3DArgs, FeatureMapInfo, StringValue, \
+    ImageInputPreviewData
 from routers import audio, stream_diffusion, stylegan
-from utils import create_nested_file_structure
+from utils import create_nested_file_structure, create_image_input_preview_data
 
 app = FastAPI(root_path="/api")
 
@@ -149,6 +150,16 @@ def set_current_generator(mode: StringValue):
     store.current_generator = mode.value
     return True
 
+
+@app.get("/get/image-preview-data")
+def get_image_input_preview_list() -> List[ImageInputPreviewData]:
+    return create_image_input_preview_data(store.config.stream_diffusion.image_inputs)
+
+
+@app.get("/get/image")
+def get_image(path: str):
+    print(path)
+    return FileResponse(path)
 
 @app.post("/get/pose")
 def estimate_pose(data: StringValue):

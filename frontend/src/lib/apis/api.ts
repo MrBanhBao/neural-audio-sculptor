@@ -168,3 +168,15 @@ export async function estimatePose(data: StringValue) {
 
     return response;
 }
+
+export async function getImageInputPreviewData() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/image-preview-data`);
+
+    return response;
+}
+
+export async function getImageFile(path: string) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/image/?path=${path}`);
+
+    return response;
+}

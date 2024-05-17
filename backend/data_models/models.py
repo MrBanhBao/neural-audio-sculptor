@@ -62,6 +62,11 @@ class AudioConfig(BaseModel):
     frame_length: int
 
 
+class StreamDiffusionConfig(BaseModel):
+    image_inputs: str
+    model_id: str
+    t_index_list: List[int]
+
 class Config(BaseModel):
     """
     Represents the configurations for the backend and frontend part of the application.
@@ -74,6 +79,7 @@ class Config(BaseModel):
     backend: BackendConfig
     frontend: FrontendConfig
     audio: AudioConfig
+    stream_diffusion: StreamDiffusionConfig
 
     @classmethod
     def load(cls, config_file):
@@ -91,12 +97,13 @@ class Config(BaseModel):
             backend = BackendConfig(**config_dict["backend"])
             frontend = FrontendConfig(**config_dict["frontend"])
             audio = AudioConfig(**config_dict["audio"])
+            stream_diffusion = StreamDiffusionConfig(**config_dict["stream_diffusion"])
 
         if backend.device is None:
             backend.device = torch.device(
                 "cuda" if (torch.cuda.is_available()) else "cpu"
             )
-        return cls(backend=backend, frontend=frontend, audio=audio)
+        return cls(backend=backend, frontend=frontend, audio=audio, stream_diffusion=stream_diffusion)
 
 
 class File(BaseModel):
@@ -297,7 +304,7 @@ class ImageData(BaseModel):
     image: str
 
 
-class ImageInputsPreviewData(BaseModel):
+class ImageInputPreviewData(BaseModel):
     name: str
     path: str
     images: List[str]

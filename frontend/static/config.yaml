@@ -17,5 +17,6 @@ audio:
   frame_length: 512
 
 stream_diffusion:
-    image_dir: '/home/hao/Testspace/StreamDiffusion/examples/mymy/inputs/photo-real'
-    model_id: 'JamesFlare/pastel-mix'
+  image_inputs: '/home/hao/Pictures/stream_diffusion'
+  model_id: 'stabilityai/sd-turbo'
+  t_index_list: [26, 38] # [6, 28]

@@ -10,7 +10,7 @@ from PIL import Image
 from PIL.Image import Image as PilImage
 from numpy import typing as npt
 
-from data_models import File, Folder, Transform3DArgs, FeatureMapInfo
+from data_models import File, Folder, Transform3DArgs, FeatureMapInfo, ImageInputPreviewData
 
 
 def create_nested_file_structure(root_path: str) -> Folder:
@@ -177,3 +177,13 @@ def set_transform3d_maps(index: int, args:Transform3DArgs,
     return args_copy
 
 
+def create_image_input_preview_data(base_dir: str, number: int = 9) -> List[ImageInputPreviewData]:
+    data_list = []
+    for root, dirs, files in os.walk(base_dir):
+        for subdir in dirs:
+            subdir_path = os.path.join(root, subdir)
+            images = [os.path.join(subdir_path, file) for file in os.listdir(subdir_path)[:number] if file.lower().endswith(('png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'))]
+
+            data = ImageInputPreviewData(name=subdir, path=subdir_path, images=images)
+            data_list.append(data)
+    return data_list
