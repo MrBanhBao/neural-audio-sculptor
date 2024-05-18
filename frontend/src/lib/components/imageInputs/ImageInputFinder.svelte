@@ -13,12 +13,12 @@
 
 	onMount(async () => {
 		previewData = await fetchImageInputPreviewData();
-		console.log('dasdasdasd', previewData);
 	});
 </script>
 
 <div class="flex flex-wrap justify-evenly">
 	{#each previewData as preview}
-		<ImageInputPreview name={preview.name} path={preview.path} imagePaths={preview.images}></ImageInputPreview>
+		<ImageInputPreview name={preview.name} path={preview.path} imagePaths={preview.images}
+		></ImageInputPreview>
 	{/each}
 </div>

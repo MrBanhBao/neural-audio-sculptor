@@ -17,7 +17,6 @@
 	async function fetchFeatureMaps() {
 		const response = await getFeatureMapFunction();
 		const data = await response.json();
-		console.log(data);
 		return data;
 	}
 	onMount(async () => {

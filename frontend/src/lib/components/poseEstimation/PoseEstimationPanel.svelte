@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { estimatePose } from '$lib/apis/api';
+	import { SlideToggle } from '@skeletonlabs/skeleton';
 
 	export let width: number = 640;
 	export let height: nuber = 480;
 
 	let videoElement: HTMLVideoElement;
 	let canvasElement: HTMLCanvasElement;
-	let isRunning = false;
-	let photo;
-	let interval = null;
+	let active: boolean = false;
+	let annotatedImageUrl: string;
+	let interval: NodeJS.Timeout = null;
 
 	async function startWebcam() {
 		try {
@@ -21,22 +22,30 @@
 		}
 	}
 
-	// Function to capture an image from the webcam
 	function captureImage() {
 		const context = canvasElement.getContext('2d');
 		context?.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
 		return canvasElement.toDataURL('image/jpeg');
 	}
 
-	// Function to start the continuous capture and send process
+	function handleClick() {
+		if (!active) {
+			console.log('start this shit');
+			startProcessing();
+		} else {
+			console.log('stop this shit');
+			stopProcessing();
+		}
+	}
+
 	async function startProcessing() {
 		if (interval !== null) return; // Avoid multiple intervals
 
 		interval = setInterval(async () => {
 			const capturedImage = captureImage();
-			console.log(capturedImage);
-			const response = await estimatePose({value: capturedImage} as StringValue);
-			console.log(await response.json());
+			const response = await estimatePose({ value: capturedImage } as StringValue);
+			const blob = await response.blob();
+			annotatedImageUrl = URL.createObjectURL(blob);
 		}, 125);
 	}
 
@@ -54,14 +63,17 @@
 	onDestroy(() => {
 		clearInterval(interval);
 	});
+
+	$: console.log(active);
 </script>
 
 <div>
 	<video bind:this={videoElement} autoplay style="display: none;"></video>
-	<canvas bind:this={canvasElement} width="640" height="480" style=""></canvas>
-	<button on:click={startProcessing}>Start Processing</button>
-	<button on:click={stopProcessing}>Stop Processing</button>
-	{#if photo}
-		<img src={photo} alt="Processed Image" />
+	<canvas bind:this={canvasElement} width="640" height="480" style="display: none;"></canvas>
+	<SlideToggle name="slider-label" bind:checked={active} on:click={handleClick}
+		>Pose Estimation</SlideToggle
+	>
+	{#if annotatedImageUrl}
+		<img src={annotatedImageUrl} alt="Processed Image" />
 	{/if}
 </div>

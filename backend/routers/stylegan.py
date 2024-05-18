@@ -29,7 +29,7 @@ async def root():
 
 
 @router.post("/load/file")
-async def load_model_file(model_path: StringValue):
+def load_model_file(model_path: StringValue):
     try:
         print(f"Loading Model File: {model_path}...")
         generator.load_model(model_path.value)

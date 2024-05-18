@@ -1,17 +1,20 @@
 import base64
 import copy
+import io
 from typing import List
 
 import uvicorn
+from PIL import Image
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, Response
 from starlette.middleware.cors import CORSMiddleware
 
 import utils.store as store
+from core.cam.pose_estimation import calc_landmarks_and_annotate
 from data_models import Folder, Config, Transform2DArgs, Transform3DArgs, FeatureMapInfo, StringValue, \
     ImageInputPreviewData
 from routers import audio, stream_diffusion, stylegan
-from utils import create_nested_file_structure, create_image_input_preview_data
+from utils import create_nested_file_structure, create_image_input_preview_data, img_pil_to_bytes
 
 app = FastAPI(root_path="/api")
 
@@ -165,13 +168,11 @@ def get_image(path: str):
 def estimate_pose(data: StringValue):
         # Decode base64 image
         image_data = base64.b64decode(data.value.split(",")[1])
-        # image = Image.open(io.BytesIO(image_data))
-        # image.show()
-        # Process the image (for example, convert to grayscale)
-        # processed_image = ImageOps.grayscale(image)
+        image = Image.open(io.BytesIO(image_data)).convert('RGB')
 
-        #return {"processed_image": f"data:image/png;base64,{processed_image_base64}"}
-        return True
+        anno_image = calc_landmarks_and_annotate(image)
+        img_bytes = img_pil_to_bytes(anno_image)
+        return Response(content=img_bytes, media_type="image/jpeg")
 
 if __name__ == "__main__":
     uvicorn.run(app, host=store.config.backend.host, port=store.config.backend.port)

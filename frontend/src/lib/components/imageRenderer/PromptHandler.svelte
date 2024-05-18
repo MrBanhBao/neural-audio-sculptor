@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getPrompt, setPrompt } from '$lib/apis/stream-diffusion-api';
+	import type { HtmlEvents } from '@tabler/icons-svelte/IconHtml.svelte';
 	import { onMount } from 'svelte';
 
 	let currentPrompt: string = '';
@@ -14,12 +15,10 @@
 
 	onMount(async () => {
 		currentPrompt = await fetchPrompt();
-		console.log(currentPrompt);
 	});
 
 	async function applyPrompt() {
 		const response = setPrompt({ value: currentPrompt } as StringValue);
-		console.log(response);
 	}
 
 	async function handleKeydown(event) {

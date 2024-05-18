@@ -1,3 +1,4 @@
+import gc
 import os
 import pickle
 import sys
@@ -27,6 +28,10 @@ class StyleGan2Ada:
         self.load_model(model_file, device)
 
     def load_model(self, model_file: str, device: Union[str, None] = None):
+        del self.Gs
+        gc.collect()
+        torch.cuda.empty_cache()
+
         with open(model_file, "rb") as f:
             try:
                 self._set_device(device=device)
@@ -34,6 +39,7 @@ class StyleGan2Ada:
                 self.z_dim = self.Gs.z_dim
                 self.num_ws = self.Gs.mapping.num_ws
                 self.store = StyleGanStore.random_init(self.z_dim, self.num_ws)
+                torch.cuda.empty_cache()
             except Exception as e:
                 print(e)
 

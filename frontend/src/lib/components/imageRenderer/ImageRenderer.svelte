@@ -3,7 +3,7 @@
 	import { wsRoutineUrl as wsStreamDiffsuionUrl } from '$lib/apis/stream-diffusion-api';
 
 	import { onMount, onDestroy } from 'svelte';
-	import { IconPaint, IconWindowMaximize } from '@tabler/icons-svelte';
+	import { IconPaint, IconWindowMaximize, IconPlug } from '@tabler/icons-svelte';
 	import Modal from '../utils/Modal.svelte';
 	import Finder from '$lib/components/finder/Finder.svelte';
 	import PromptHandler from './PromptHandler.svelte';
@@ -48,10 +48,8 @@
 	}
 
 	function reconnectWebSocket() {
-		if (!isConnected) {
-			console.log('Reconnecting WebSocket...');
-			connectWebSocket();
-		}
+		console.log('Reconnecting WebSocket...');
+		connectWebSocket();
 	}
 
 	function disconnectWebSocket() {
@@ -153,6 +151,9 @@
 					<span>Choose Inputs</span>
 				</button>
 			{/if}
+			<button type="button" class="variant-filled btn-icon mr-4" on:click={reconnectWebSocket}
+				><IconPlug /></button
+			>
 			<button type="button" class="variant-filled btn-icon" on:click={openImage}
 				><IconWindowMaximize /></button
 			>
