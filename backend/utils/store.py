@@ -8,7 +8,7 @@ from data_models import (
     Transform2DArgs,
     Transform3DArgs
 )
-from data_models import FeatureMapInfo
+from data_models import FeatureMapInfo, Landmark
 from utils.utils import init_feature_map_info_dict
 
 # general configs
@@ -33,6 +33,11 @@ audio_features: Dict[str, Dict[str, List[float]]] = {}
 # torch
 device = torch.device("cuda" if (torch.cuda.is_available()) else "cpu")
 
-
+# generators
 generators = ["StyleGan", "StreamDiffusion"]
 current_generator: Literal["StyleGan", "StreamDiffusion"] = "StyleGan"
+
+# pose estimation
+pose_estimation_is_active = False
+delta_pose_landmarks: Dict[str, Landmark] = {}
+pose_landmarks: Dict[str, Landmark] = {}

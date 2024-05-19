@@ -155,6 +155,31 @@ export async function setCurrentGenerator(info: StringValue) {
 }
 
 
+
+export async function getPoseEstimationActiveState() {
+    const response = await fetch(`http://${HOST}:${PORT}/api/get/pose/active-state`);
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
+export async function setPoseEstimationActiveState(active: BooleanValue) {
+    const response = await fetch(`http://${HOST}:${PORT}/api/set/pose/active-state`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(active)
+    });
+
+    if (!response.ok) {
+        throw new Error(response.statusText)
+    }
+
+    return response;
+}
+
+
 export async function estimatePose(data: StringValue) {
     const response = await fetch(`http://${HOST}:${PORT}/api/get/pose`, {
         method: 'POST',

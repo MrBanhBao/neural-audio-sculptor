@@ -4,7 +4,7 @@ import io
 from typing import List
 
 import uvicorn
-from PIL import Image
+from PIL import Image, ImageOps
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse, FileResponse, Response
 from starlette.middleware.cors import CORSMiddleware
@@ -12,7 +12,7 @@ from starlette.middleware.cors import CORSMiddleware
 import utils.store as store
 from core.cam.pose_estimation import calc_landmarks_and_annotate
 from data_models import Folder, Config, Transform2DArgs, Transform3DArgs, FeatureMapInfo, StringValue, \
-    ImageInputPreviewData
+    ImageInputPreviewData, BooleanValue
 from routers import audio, stream_diffusion, stylegan
 from utils import create_nested_file_structure, create_image_input_preview_data, img_pil_to_bytes
 
@@ -164,15 +164,31 @@ def get_image(path: str):
     print(path)
     return FileResponse(path)
 
+
+@app.get("/get/pose/active-state")
+def is_pose_active() -> BooleanValue:
+    print("get active staaaate")
+    return BooleanValue(value=store.pose_estimation_is_active)
+
+
+@app.post("/set/pose/active-state")
+def set_pose_active(active: BooleanValue):
+    print("set active staaaate")
+    store.pose_estimation_is_active = active.value
+    return True
+
+
 @app.post("/get/pose")
 def estimate_pose(data: StringValue):
         # Decode base64 image
         image_data = base64.b64decode(data.value.split(",")[1])
         image = Image.open(io.BytesIO(image_data)).convert('RGB')
+        image = ImageOps.mirror(image)
 
         anno_image = calc_landmarks_and_annotate(image)
         img_bytes = img_pil_to_bytes(anno_image)
         return Response(content=img_bytes, media_type="image/jpeg")
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host=store.config.backend.host, port=store.config.backend.port)

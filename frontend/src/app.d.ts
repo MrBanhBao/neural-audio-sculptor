@@ -42,6 +42,10 @@ type StringValue = {
 	value: string;
 }
 
+type BooleanValue = {
+	value: boolean;
+}
+
 type NumberValue = {
 	value: number;
 }

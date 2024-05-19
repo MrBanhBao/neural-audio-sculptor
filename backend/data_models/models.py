@@ -246,6 +246,10 @@ class IntegerValue(BaseModel):
     value: int
 
 
+class BooleanValue(BaseModel):
+    value: bool
+
+
 class PlaybackState(BaseModel):
     play: bool = False
     loop: bool = True
@@ -308,3 +312,9 @@ class ImageInputPreviewData(BaseModel):
     name: str
     path: str
     images: List[str]
+
+
+class Landmark(BaseModel):
+    x: float = 0
+    y: float = 0
+    z: float = 0

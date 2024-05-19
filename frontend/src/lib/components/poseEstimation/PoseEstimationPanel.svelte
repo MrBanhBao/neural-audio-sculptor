@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { estimatePose } from '$lib/apis/api';
+	import {
+		estimatePose,
+		getPoseEstimationActiveState,
+		setPoseEstimationActiveState
+	} from '$lib/apis/api';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
 
 	export let width: number = 640;
@@ -28,12 +32,21 @@
 		return canvasElement.toDataURL('image/jpeg');
 	}
 
-	function handleClick() {
+	async function handleClick() {
 		if (!active) {
 			console.log('start this shit');
+			const response = await setPoseEstimationActiveState({ value: true } as BooleanValue);
+			if (!response.ok) {
+				return;
+			}
+			active = true;
 			startProcessing();
 		} else {
-			console.log('stop this shit');
+			const response = await setPoseEstimationActiveState({ value: false } as BooleanValue);
+			if (!response.ok) {
+				return;
+			}
+			active = false;
 			stopProcessing();
 		}
 	}
@@ -46,7 +59,7 @@
 			const response = await estimatePose({ value: capturedImage } as StringValue);
 			const blob = await response.blob();
 			annotatedImageUrl = URL.createObjectURL(blob);
-		}, 125);
+		}, 150);
 	}
 
 	function stopProcessing() {
@@ -58,6 +71,9 @@
 
 	onMount(async () => {
 		startWebcam();
+		const response = await getPoseEstimationActiveState();
+		const data = await response.json();
+		active = data.value;
 	});
 
 	onDestroy(() => {
