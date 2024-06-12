@@ -18,7 +18,7 @@
 	<TabGroup>
 		<Tab bind:group={tabSet} name="tab1" value={0}>
 			<div class="flex items-center">
-				<IconTransform /><span class="ml-1 font-bold">Speed & WS</span>
+				<IconTransform /><span class="ml-1 font-bold">Speed & Details</span>
 			</div>
 		</Tab>
 		<Tab bind:group={tabSet} name="tab2" value={1}>

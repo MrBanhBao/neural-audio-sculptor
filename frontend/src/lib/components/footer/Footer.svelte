@@ -8,6 +8,6 @@
 	<svelte:fragment slot="lead">
 		<StatusFeedback></StatusFeedback>
 	</svelte:fragment>
-	(Foooooooter)
-	<svelte:fragment slot="trail"><GeneratorChange/></svelte:fragment>
+	<!-- (Foooooooter) -->
+	<svelte:fragment slot="trail"><GeneratorChange /></svelte:fragment>
 </AppBar>
