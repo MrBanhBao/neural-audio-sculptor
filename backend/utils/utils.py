@@ -168,7 +168,11 @@ def set_transform3d_maps(index: int, args:Transform3DArgs,
         track_name: str = map_info.track_name
         feature_name: str = map_info.feature_name
         factor: float = map_info.factor
-        feature_value: float = feature_dict[track_name][feature_name][index+1] - feature_dict[track_name][feature_name][index]
+
+        try:
+            feature_value: float = feature_dict[track_name][feature_name][index+1] - feature_dict[track_name][feature_name][index]
+        except Exception as e:
+            feature_value: float = feature_dict[track_name][feature_name][index]
         value = feature_value * factor
         if map_info.active:
             setattr(args_copy, feat_id, getattr(args_copy, feat_id) + value)

@@ -1,4 +1,3 @@
-import gc
 import os
 import pickle
 import sys
@@ -28,10 +27,6 @@ class StyleGan2Ada:
         self.load_model(model_file, device)
 
     def load_model(self, model_file: str, device: Union[str, None] = None):
-        del self.Gs
-        gc.collect()
-        torch.cuda.empty_cache()
-
         with open(model_file, "rb") as f:
             try:
                 self._set_device(device=device)
@@ -39,7 +34,6 @@ class StyleGan2Ada:
                 self.z_dim = self.Gs.z_dim
                 self.num_ws = self.Gs.mapping.num_ws
                 self.store = StyleGanStore.random_init(self.z_dim, self.num_ws)
-                torch.cuda.empty_cache()
             except Exception as e:
                 print(e)
 
@@ -114,7 +108,7 @@ class StyleGan2Ada:
 
         with torch.no_grad():
             ws: torch.Tensor = self.calculate_ws(z=z_interpolate, label=label, truncation_psi=truncation_psi)
-            ws = self._modify_ws(index, ws)
+            print(ws.shape)
 
             if transform_args:
                 img = self.calculate_image_with_transformation(ws=ws, target_layer_idx=3, transform_args=transform_args)
@@ -156,8 +150,10 @@ class StyleGan2Ada:
                     factor: float = featureMapInfo.factor
 
                     ws_indices: List[int] = ws_name_indices_mapping[feature_info_id]
-                    feature_value: float = store.audio_features[track_name][feature_name][index+1] - store.audio_features[track_name][feature_name][index]
-
+                    try:
+                        feature_value: float = store.audio_features[track_name][feature_name][index+1] - store.audio_features[track_name][feature_name][index]
+                    except Exception as e:
+                        feature_value: float = store.audio_features[track_name][feature_name][index]
                     ws[:, ws_indices] = ws[:, ws_indices] + (self.store.ws_direction[:, ws_indices] * feature_value * factor)
         return ws
 
