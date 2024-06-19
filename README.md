@@ -1,1 +1,3 @@
-# neural-audio-sculptor
+# Neural Audio Sculptor
+
+The Neural Audio Sculptor (NAS) is a tool for artistic expression, designed in the context of a master's thesis. NAS allows you to create unique audio-visual experiences supported by a tool that combines deep learning, music information retrieval, and various approaches in human-computer interaction. NAS transforms auditory sources into visually immersive, real-time dynamic imagery, synchronizing music features with visuals of the user’s choosing. This blend of imagery and sound creates a unified experience under the user’s artistic control.
