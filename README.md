@@ -18,7 +18,7 @@ sudo apt install ffmpeg
 ```
 3. Install Conda. Instructions can be found [here](https://conda.io/projects/conda/en/latest/user-guide/index.html).
 
-## Installation Process
+## A. Installation Process
 ### Step 1: clone this repository
 ```bash
 git clone https://github.com/MrBanhBao/neural-audio-sculptor
@@ -30,14 +30,75 @@ conda create -n nas --no-default-packages python=3.10
 conda activate nas
 ```
 
-### Step 3: create and activate conda environment
-```bash
-conda create -n nas --no-default-packages python=3.10
-conda activate nas
-```
-### Step 4: create and activate conda environment
+### Step 3: install requirements via script
 ```bash
 python install_requirements.py
 ```
 
-## 
+## B. Set config
+The [config.yaml](frontend%2Fstatic%2Fconfig.yaml) must be adjusted to your needs.
+Following config names must be set to you systems need:
+```yaml
+backend:
+  ...
+  cache_dir: <path> # directory where splitted files and feature calculations are stored
+  music_dir: <path> # directory containing music files, so the music finder UI component can display them 
+  stylegan_checkpoints: <path> # directory containing the stylegan2 checkpoints, so that Model Finder UI component can display them 
+
+stream_diffusion:
+  image_inputs: <path> # directory, containing folders with images serving as input imgs for the img2img process
+  model_id: 'stabilityai/sd-turbo' # initial diffusion model
+  t_index_list: [26, 38] # [6, 28] # time steps with intermediate result (the more steps -> the better the quality -> slower)
+```
+The rest should/can remain untouched.
+
+## C. Start Backend
+Note: This process can take a while when running for the first time.
+1. open new terminal with this repo as working directory
+2. change to backend directory
+```bash
+cd backend
+```
+2. start server
+```bash
+uvicorn main:app --host 127.0.0.1  
+```
+Wait till you see. This indicates that the server is running.
+```
+INFO:     Started server process [40450]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [40450]
+```
+
+## D. Start Frontend
+1. open new terminal with this repo as working directory
+2. change to frontend
+```bash
+cd frontend
+```
+3. install needed modules (only need to do once)
+```bash
+npm install
+```
+
+4. start frontend
+```bash
+npm run dev
+```
+
+### Notes:
+Check if the frontend ports [main.py](backend%2Fmain.py) are the same as in the cors list.
+
+### Troubleshooting:
+In case the NAS Backend starts in CPU mode instead of CUDA mode, you can try running following commands:
+```bash
+sudo modprobe nvidia_uvm
+sudo rmmod nvidia_uvm
+sudo kill -9 (ps -A | grep python | awk '{print $1}')
+```
+These command will free up CUDA memory or release remaining cuda processes.

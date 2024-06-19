@@ -33,9 +33,17 @@ def install_streamDiffusion():
     packages = ["streamdiffusion[tensorrt]"]
     pip_install_packages(packages=packages)
 
+    print("Installing TensorRT extensions")
+    result = subprocess.run(
+        ["python", "-m", "streamdiffusion.tools.install-tensorrt"],
+        capture_output=True,
+        text=True,
+    )
+    print(result.stdout)
+    print(result.stderr)
+
 def install_required_packages():
     packages = [
-        "streamdiffusion[tensorrt]",
         "ninja==1.11.1.1",
         "spleeter==2.4.0",
         "fastapi==0.110.1",
@@ -57,6 +65,8 @@ def install_required_packages():
 
     pip_install_packages(packages=packages)
 
+
 if __name__ == "__main__":
     install_torch()
+    install_streamDiffusion()
     install_required_packages()
