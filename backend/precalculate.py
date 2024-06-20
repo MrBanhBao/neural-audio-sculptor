@@ -13,10 +13,10 @@ config: Config = Config.load(config_file=CONFIG_FILE)
 sample_rate = config.audio.sample_rate
 cache_dir = config.backend.cache_dir
 music_dir = config.backend.music_dir
-audio_extensions = ['*.mp3', '*.wav', '*.flac', '*.aac', '*.ogg']
+audio_extensions = ["*.mp3", "*.wav", "*.flac", "*.aac", "*.ogg"]
 track_names = store.track_names
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     audio_loader = AudioLoader(sample_rate=sample_rate)
     audio_files = []
 
@@ -24,7 +24,6 @@ if __name__ == '__main__':
     for ext in audio_extensions:
         # Use glob to find all files with the given extension in the directory
         audio_files.extend(glob.glob(os.path.join(music_dir, ext)))
-
 
     print(f"Found {len(audio_files)} in folder {music_dir}")
     # Iterate through each found audio file
@@ -41,11 +40,12 @@ if __name__ == '__main__':
         if not is_splitted(files):
             print(f"Start splitting {audio_file}...")
             create_directory(directory)
-            splitted_audio_data_tracks = split_audio(audio_data=audio_data, save_dir=directory)
+            splitted_audio_data_tracks = split_audio(
+                audio_data=audio_data, save_dir=directory
+            )
             audio_data_tracks.update(splitted_audio_data_tracks)
 
             print(f"Calculate features {audio_file}...")
             calculate_audio_features(audio_data_tracks, folder_name)
         else:
             print("Allready splitted.")
-
