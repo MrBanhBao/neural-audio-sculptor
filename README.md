@@ -5,8 +5,9 @@ NAS allows you to create unique audio-visual experiences supported by an archite
 music information retrieval, and various approaches in human-computer interaction. 
 NAS transforms auditory sources into visually immersive, real-time dynamic imagery, 
 synchronizing music features with visuals of the user’s choosing. 
-This blend of imagery and sound creates a unified experience under the user’s artistic control.
+This blend of imagery and sound creates a unified experience under the user’s artistic control.  
 
+[HPI Project Side](https://hpi.de/neurodesign/projects/neural-audio-sculptor.html) 
 ## Prerequisite
 Before you can start installing and using NAS, you need to do first.
 
@@ -17,6 +18,11 @@ Before you can start installing and using NAS, you need to do first.
 sudo apt install ffmpeg
 ```
 3. Install Conda. Instructions can be found [here](https://conda.io/projects/conda/en/latest/user-guide/index.html).
+4. Git clone StyleGan-Ada2 Code into [libs](backend%2Flibs)
+```bash
+cd libs
+git clone git@github.com:NVlabs/stylegan2-ada-pytorch.git
+```
 
 ## A. Installation Process
 ### Step 1: clone this repository
@@ -102,3 +108,11 @@ sudo rmmod nvidia_uvm
 sudo kill -9 (ps -A | grep python | awk '{print $1}')
 ```
 These command will free up CUDA memory or release remaining cuda processes.
+
+You might get GPU memory problems, when splitting music files with spleeter, while StreamDiffusion is also loaded in memory.
+Best way to avoid this is to precalculate and split the music files. The script [precalculate.py](backend%2Fprecalculate.py)
+will loop over you given music directory and split and calculate needed audio features and store them in the cache folder.
+```bash
+cd backend
+python precalculate.py
+```
