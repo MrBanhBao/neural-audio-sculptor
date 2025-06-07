@@ -8,6 +8,14 @@ synchronizing music features with visuals of the user’s choosing.
 This blend of imagery and sound creates a unified experience under the user’s artistic control.  
 
 [HPI Project Side](https://hpi.de/neurodesign/projects/neural-audio-sculptor.html) 
+
+
+## Videos showcasing NAS
+[Video 1](https://drive.google.com/file/d/13SD0WEYPwUVpen3orci_SCpkPuPNfVLM/view)
+[Video 2](https://drive.google.com/file/d/1YsU1GZTxhMj2GY_cYU2DGB8KyqLcDZsl/view)
+[Video 3](https://drive.google.com/file/d/1NZjWihqOn5EUZRe49AX00lPl-ye3hsG1/view)
+
+
 ## Prerequisite
 Before you can start installing and using NAS, you need to do first.
 
